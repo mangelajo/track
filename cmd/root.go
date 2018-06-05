@@ -27,6 +27,8 @@ var cfgFile string
 var bzEmail string
 var bzPassword string
 var bzURL string
+var whiteBoardQuery string
+var myBugs bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -58,13 +60,17 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().StringVarP(&bzURL, "bzurl", "a", "https://bugzilla.redhat.com", "Bugzilla URL")
-	rootCmd.PersistentFlags().StringVarP(&bzEmail,"bzemail", "u", "", "Bugzilla login email")
-	rootCmd.PersistentFlags().StringVarP(&bzPassword,"bzpass", "p", "", "Bugzilla login password")
+	rootCmd.PersistentFlags().StringP("bzurl", "a", "https://bugzilla.redhat.com", "Bugzilla URL")
+	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
+	rootCmd.PersistentFlags().StringP("bzpass", "p", "", "Bugzilla login password")
+	rootCmd.PersistentFlags().StringP("dfg", "d", "", "Openstack DFG")
+	rootCmd.PersistentFlags().StringP("squad", "s", "", "Openstack DFG Squad")
+	rootCmd.PersistentFlags().BoolVarP(&myBugs,"my-bugs", "m", false,"List only my bugs")
 }
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -81,10 +87,31 @@ func initConfig() {
 		viper.SetConfigName(".track")
 	}
 
+	viper.SetEnvPrefix("TRACK")
 	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	err := viper.ReadInConfig()
+	if err != nil { // Handle errors reading the config file
+		fmt.Printf("Could not read config file: %s \n", err)
 	}
+
+	for _, k := range []string {"bzurl", "bzemail", "bzpass", "dfg", "squad"} {
+		viper.BindPFlag(k, rootCmd.PersistentFlags().Lookup(k))
+	}
+
+	bzURL = viper.GetString("bzurl")
+	bzPassword = viper.GetString("bzpass")
+	bzEmail = viper.GetString("bzemail")
+	whiteBoardQuery = ""
+	if viper.GetString("dfg") != "" {
+		whiteBoardQuery += fmt.Sprintf("DFG:%s", viper.GetString("dfg"))
+	}
+
+	if viper.GetString("squad") != "" {
+		if viper.GetString("dfg") == "" {
+			panic(fmt.Errorf("When specifying a squad, please provide DFG too"))
+		}
+		whiteBoardQuery += fmt.Sprintf(" Squad:%s", viper.GetString("squad"))
+	}
+
+
 }

@@ -37,33 +37,70 @@ func init() {
 	rootCmd.AddCommand(bzListCmd)
 }
 
+const RH_OPENSTACK_PRODUCT = "Red Hat OpenStack"
+const CMP_NETWORKING_OVN = "python-networking-ovn"
+var BZ_NEW_ASSIGNED = []string {"NEW", "ASSIGNED"}
+const CLS_REDHAT = "Red Hat"
+
 func bzList(cmd *cobra.Command, args []string) {
 
-	fmt.Println("Login in...")
-	client, _ := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
+	if bzEmail == "" {
+		panic(fmt.Errorf("No email address provided either in parameters or ~/.track.yaml file"))
+	}
+	if bzPassword == "" {
+		panic(fmt.Errorf("No bz password provided either in parameters or ~/.track.yaml file"))
+	}
 
-	fmt.Println("List query ..")
-	buglist, _:= client.BugList(50,0)
+	client, err := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
+
+	if err != nil || client == nil {
+		panic(fmt.Errorf("Problem during login to bugzilla: %s", err))
+	}
+
+	query := bugzilla.BugListQuery{
+		Limit:          50,
+		Offset:         0,
+		Classification: CLS_REDHAT,
+		Product:        RH_OPENSTACK_PRODUCT,
+		BugStatus:      BZ_NEW_ASSIGNED,
+		WhiteBoard:     whiteBoardQuery,
+	}
+
+	fmt.Println(whiteBoardQuery)
+
+	if myBugs {
+		query.AssignedTo = bzEmail
+	}
+
+	buglist, _:= client.BugList(&query)
 
 	for _, bz := range buglist {
 		fmt.Printf("%v\n", bz)
 
 	}
-	fmt.Println("bug info")
+	//fmt.Println("bug info")
 
-	bug,_ := client.BugInfo(1546996)
-	fmt.Printf("%v\n", bug)
+	//bug,_ := client.BugInfo(1546996)
+	//hist,_ := client.BugHistory(1546996)
 
-	fmt.Println("history:")
-	hist,_ := client.BugHistory(1546996)
-
-	fmt.Printf("%v\n", hist)
+	//fmt.Printf("%v\n", hist)
 
 	fmt.Println("show_bug:")
-	bi, _ := client.ShowBug(1546996)
-	fmt.Printf("%v\n", bi)
 
-	fmt.Println(bi.Cassigned_to.Content)
+	for _, bug := range buglist {
+		bi, err := client.ShowBug(bug.ID)
+		if bi == nil || err != nil {
+			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
+		} else {
+			fmt.Printf("%v\n", bi)
+			if bi.Cassigned_to != nil {
+				fmt.Println(bi.Cassigned_to.Content)
+			}
+		}
+	}
+
+
+
 }
 
 
