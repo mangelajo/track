@@ -3,10 +3,12 @@ BUILD=`date +%FT%T%z`
 
 LDFLAGS="-X cmd.Version=${VERSION} -X cmd.Build=${BUILD}"
 
-pkg/bugzilla/xmlbugzilla.go:
+all: pkg/bugzilla/xmlbugzilla.go track
+
+pkg/bugzilla/xmlbugzilla.go: tools/gen_xml_code.sh
 	tools/gen_xml_code.sh > $@
 
-track: pkg/bugzilla/*.go cmd/*.go main.go
+track: Makefile pkg/bugzilla/*.go cmd/*.go main.go
 	go build -ldflags ${LDFLAGS} -o track main.go
 
 test:
@@ -17,6 +19,4 @@ clean:
 
 clean-xml:
 	rm pkg/bugzilla/xmlbugzilla.go
-
-all: track
 
