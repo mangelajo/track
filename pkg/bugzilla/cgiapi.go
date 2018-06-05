@@ -128,23 +128,52 @@ func (client *bugzillaCGIClient) login(login string, password string) (err error
 }
 
 // bugList list of last changed bugs
-func (client *bugzillaCGIClient) bugList(limit int, offset int) ([]Bug, error) {
+func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
+
 	u, err := url.Parse(client.bugzillaAddr)
 	if err != nil {
 		return nil, err
 	}
-	u.Path = "buglist.cgi"
-	q := u.Query()
-	q.Set("ctype", "rdf")
-	q.Set("query_format", "advanced")
-	q.Set("limit", strconv.Itoa(limit))
-	q.Set("offset", strconv.Itoa(offset))
-	q.Set("order", "changeddate DESC")
-	q.Set("product", "Red Hat OpenStack")
-	q.Set("component", "python-networking-ovn")
-	q.Set("bug_status", "NEW")
-	q.Set("classification", "Red Hat")
 
+	u.Path = "buglist.cgi"
+
+	q := u.Query()
+
+	//q.Set("ctype", "rdf")
+	q.Set("ctype","csv")
+	q.Set("query_format", "advanced")
+	q.Set("limit", strconv.Itoa(query.Limit))
+	q.Set("offset", strconv.Itoa(query.Offset))
+
+	if query.Order == "" {
+		q.Set("order", "changeddate DESC")
+	} else {
+		q.Set("order", query.Order)
+	}
+
+	if query.Product != "" {
+		q.Set("product", query.Product)
+	}
+
+	if query.Component != "" {
+		q.Set("component", query.Component)
+	}
+
+	for _, bs := range query.BugStatus {
+		q.Add("bug_status", bs)
+	}
+
+	if query.Classification != "" {
+		q.Set("classification", query.Classification)
+	}
+
+	if query.WhiteBoard != "" {
+		q.Set("cf_internal_whiteboard", query.WhiteBoard)
+	}
+
+	if query.AssignedTo != "" {
+		q.Set("assigned_to", query.AssignedTo)
+	}
 
 	u.RawQuery = q.Encode()
 
@@ -168,7 +197,9 @@ func (client *bugzillaCGIClient) bugList(limit int, offset int) ([]Bug, error) {
 		return nil, err
 	}
 
-	bugList, err := parseBugzRDF(res.Body)
+	//bugList, err := parseBugzRDF(res.Body)
+	bugList, err := parseBugzCSV(res.Body)
+
 	if err != nil {
 		return nil, err
 	}

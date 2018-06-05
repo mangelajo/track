@@ -87,9 +87,22 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 	return client, nil
 }
 
+type BugListQuery struct {
+	Limit int
+	Offset int
+	Order string
+	Classification string
+	Product string
+	Component string
+	BugStatus []string
+	WhiteBoard string
+	AssignedTo string
+
+}
+
 // BugList list of last changed bugs
-func (client *Client) BugList(limit int, offset int) ([]Bug, error) {
-	return client.cgi.bugList(limit, offset)
+func (client *Client) BugList(query *BugListQuery) ([]Bug, error) {
+	return client.cgi.bugList(query)
 }
 
 // BugzillaVersion returns Bugzilla version

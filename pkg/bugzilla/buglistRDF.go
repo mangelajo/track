@@ -3,6 +3,10 @@ package bugzilla
 import (
 	"encoding/xml"
 	"io"
+	"encoding/csv"
+	"strconv"
+	"fmt"
+	"github.com/spf13/viper"
 )
 
 /*
@@ -89,6 +93,35 @@ func parseBugzRDF(reader io.Reader) (results []bzBug, err error) {
 	results = make([]bzBug, len(rdf.Result.Bugs.Seq.Items), len(rdf.Result.Bugs.Seq.Items))
 	for i, container := range rdf.Result.Bugs.Seq.Items {
 		results[i] = container.Bug
+	}
+	return results, nil
+}
+
+// bug_id,"product","component","assigned_to","bug_status","resolution","short_desc","changeddate"
+func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
+	csvreader := csv.NewReader(reader)
+
+	// ignore first line header
+	csvreader.Read()
+	for {
+		line, error := csvreader.Read()
+		if error == io.EOF {
+			break
+		} else if error != nil {
+			return nil, error
+		}
+		bz_id, _ := strconv.Atoi(line[0])
+		results = append(results, bzBug{
+			ID:			 bz_id,
+			URL:         fmt.Sprintf("%s/show_bug.cgi?id=%d", viper.Get("bzurl"), bz_id),
+			Product:     line[1],
+			Component:   line[2],
+			Assignee:    line[3],
+			Status:      line[4],
+			Resolution:  line[5],
+			Description: line[6],
+			Changed:     line[7],
+		})
 	}
 	return results, nil
 }

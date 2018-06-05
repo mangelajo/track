@@ -12,11 +12,14 @@ echo "*/"
 echo ""
 echo "package bugzilla"
 echo ""
+echo "import \"encoding/xml\""
 
-$GOPATH/bin/chidley -t -G -u "https://bugzilla.redhat.com/show_bug.cgi?id=1525967&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=1503518&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=1433532&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=1548947&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=1433533&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=154891&ctype=xml" \
-                          "https://bugzilla.redhat.com/show_bug.cgi?id=1532280&ctype=xml"| sed -e 's/string string/Content string/g'
+echo "" >/tmp/bz.xml
+
+for bz in 1525967 1503518 1433532 1548947 1433533 154891 1498162 1532280; do
+    curl "https://bugzilla.redhat.com/show_bug.cgi?id=$bz&ctype=xml" 2>/dev/null  >> /tmp/bz.xml
+done
+
+cat tools/bz.xml >>/tmp/bz.xml
+
+$GOPATH/bin/chidley -t -G /tmp/bz.xml | sed -e 's/string string/Content string/g'

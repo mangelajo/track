@@ -5,6 +5,10 @@
 package bugzilla
 
 import "encoding/xml"
+type Cactual_time struct {
+	XMLName xml.Name `xml:"actual_time,omitempty" json:"actual_time,omitempty"`
+	Number float32 `xml:",chardata" json:",omitempty"`
+}
 
 type Calias struct {
 	XMLName xml.Name `xml:"alias,omitempty" json:"alias,omitempty"`
@@ -24,6 +28,7 @@ type Cblocked struct {
 
 type Cbug struct {
 	XMLName xml.Name `xml:"bug,omitempty" json:"bug,omitempty"`
+	Cactual_time *Cactual_time `xml:"actual_time,omitempty" json:"actual_time,omitempty"`
 	Calias *Calias `xml:"alias,omitempty" json:"alias,omitempty"`
 	Cassigned_to *Cassigned_to `xml:"assigned_to,omitempty" json:"assigned_to,omitempty"`
 	Cblocked []*Cblocked `xml:"blocked,omitempty" json:"blocked,omitempty"`
@@ -33,21 +38,33 @@ type Cbug struct {
 	Cbug_status *Cbug_status `xml:"bug_status,omitempty" json:"bug_status,omitempty"`
 	Ccc []*Ccc `xml:"cc,omitempty" json:"cc,omitempty"`
 	Ccclist_accessible *Ccclist_accessible `xml:"cclist_accessible,omitempty" json:"cclist_accessible,omitempty"`
+	Ccf_build_id *Ccf_build_id `xml:"cf_build_id,omitempty" json:"cf_build_id,omitempty"`
 	Ccf_category *Ccf_category `xml:"cf_category,omitempty" json:"cf_category,omitempty"`
 	Ccf_clone_of *Ccf_clone_of `xml:"cf_clone_of,omitempty" json:"cf_clone_of,omitempty"`
 	Ccf_cloudforms_team *Ccf_cloudforms_team `xml:"cf_cloudforms_team,omitempty" json:"cf_cloudforms_team,omitempty"`
+	Ccf_compliance_control_group *Ccf_compliance_control_group `xml:"cf_compliance_control_group,omitempty" json:"cf_compliance_control_group,omitempty"`
+	Ccf_compliance_level *Ccf_compliance_level `xml:"cf_compliance_level,omitempty" json:"cf_compliance_level,omitempty"`
 	Ccf_crm *Ccf_crm `xml:"cf_crm,omitempty" json:"cf_crm,omitempty"`
+	Ccf_cust_facing *Ccf_cust_facing `xml:"cf_cust_facing,omitempty" json:"cf_cust_facing,omitempty"`
+	Ccf_devel_whiteboard *Ccf_devel_whiteboard `xml:"cf_devel_whiteboard,omitempty" json:"cf_devel_whiteboard,omitempty"`
 	Ccf_doc_type *Ccf_doc_type `xml:"cf_doc_type,omitempty" json:"cf_doc_type,omitempty"`
+	Ccf_docs_score *Ccf_docs_score `xml:"cf_docs_score,omitempty" json:"cf_docs_score,omitempty"`
 	Ccf_documentation_action *Ccf_documentation_action `xml:"cf_documentation_action,omitempty" json:"cf_documentation_action,omitempty"`
 	Ccf_environment *Ccf_environment `xml:"cf_environment,omitempty" json:"cf_environment,omitempty"`
 	Ccf_fixed_in *Ccf_fixed_in `xml:"cf_fixed_in,omitempty" json:"cf_fixed_in,omitempty"`
+	Ccf_internal_whiteboard *Ccf_internal_whiteboard `xml:"cf_internal_whiteboard,omitempty" json:"cf_internal_whiteboard,omitempty"`
 	Ccf_last_closed *Ccf_last_closed `xml:"cf_last_closed,omitempty" json:"cf_last_closed,omitempty"`
 	Ccf_mount_type *Ccf_mount_type `xml:"cf_mount_type,omitempty" json:"cf_mount_type,omitempty"`
 	Ccf_ovirt_team *Ccf_ovirt_team `xml:"cf_ovirt_team,omitempty" json:"cf_ovirt_team,omitempty"`
+	Ccf_pgm_internal *Ccf_pgm_internal `xml:"cf_pgm_internal,omitempty" json:"cf_pgm_internal,omitempty"`
+	Ccf_pm_score *Ccf_pm_score `xml:"cf_pm_score,omitempty" json:"cf_pm_score,omitempty"`
 	Ccf_regression_status *Ccf_regression_status `xml:"cf_regression_status,omitempty" json:"cf_regression_status,omitempty"`
 	Ccf_release_notes *Ccf_release_notes `xml:"cf_release_notes,omitempty" json:"cf_release_notes,omitempty"`
+	Ccf_show_homepage *Ccf_show_homepage `xml:"cf_show_homepage,omitempty" json:"cf_show_homepage,omitempty"`
 	Ccf_story_points *Ccf_story_points `xml:"cf_story_points,omitempty" json:"cf_story_points,omitempty"`
+	Ccf_subsystem_team *Ccf_subsystem_team `xml:"cf_subsystem_team,omitempty" json:"cf_subsystem_team,omitempty"`
 	Ccf_type *Ccf_type `xml:"cf_type,omitempty" json:"cf_type,omitempty"`
+	Ccf_verified *Ccf_verified `xml:"cf_verified,omitempty" json:"cf_verified,omitempty"`
 	Ccf_verified_branch *Ccf_verified_branch `xml:"cf_verified_branch,omitempty" json:"cf_verified_branch,omitempty"`
 	Cclassification *Cclassification `xml:"classification,omitempty" json:"classification,omitempty"`
 	Cclassification_id *Cclassification_id `xml:"classification_id,omitempty" json:"classification_id,omitempty"`
@@ -56,14 +73,17 @@ type Cbug struct {
 	Ccreation_ts *Ccreation_ts `xml:"creation_ts,omitempty" json:"creation_ts,omitempty"`
 	Cdelta_ts *Cdelta_ts `xml:"delta_ts,omitempty" json:"delta_ts,omitempty"`
 	Cdependson []*Cdependson `xml:"dependson,omitempty" json:"dependson,omitempty"`
+	Cestimated_time *Cestimated_time `xml:"estimated_time,omitempty" json:"estimated_time,omitempty"`
 	Ceverconfirmed *Ceverconfirmed `xml:"everconfirmed,omitempty" json:"everconfirmed,omitempty"`
 	Cexternal_bugs []*Cexternal_bugs `xml:"external_bugs,omitempty" json:"external_bugs,omitempty"`
+	Cflag []*Cflag `xml:"flag,omitempty" json:"flag,omitempty"`
 	Ckeywords *Ckeywords `xml:"keywords,omitempty" json:"keywords,omitempty"`
 	Clong_desc []*Clong_desc `xml:"long_desc,omitempty" json:"long_desc,omitempty"`
 	Cop_sys *Cop_sys `xml:"op_sys,omitempty" json:"op_sys,omitempty"`
 	Cpriority *Cpriority `xml:"priority,omitempty" json:"priority,omitempty"`
 	Cproduct *Cproduct `xml:"product,omitempty" json:"product,omitempty"`
 	Cqa_contact *Cqa_contact `xml:"qa_contact,omitempty" json:"qa_contact,omitempty"`
+	Cremaining_time *Cremaining_time `xml:"remaining_time,omitempty" json:"remaining_time,omitempty"`
 	Crep_platform *Crep_platform `xml:"rep_platform,omitempty" json:"rep_platform,omitempty"`
 	Creporter *Creporter `xml:"reporter,omitempty" json:"reporter,omitempty"`
 	Creporter_accessible *Creporter_accessible `xml:"reporter_accessible,omitempty" json:"reporter_accessible,omitempty"`
@@ -72,6 +92,7 @@ type Cbug struct {
 	Cstatus_whiteboard *Cstatus_whiteboard `xml:"status_whiteboard,omitempty" json:"status_whiteboard,omitempty"`
 	Ctarget_milestone *Ctarget_milestone `xml:"target_milestone,omitempty" json:"target_milestone,omitempty"`
 	Ctarget_release *Ctarget_release `xml:"target_release,omitempty" json:"target_release,omitempty"`
+	Ctoken *Ctoken `xml:"token,omitempty" json:"token,omitempty"`
 	Cversion *Cversion `xml:"version,omitempty" json:"version,omitempty"`
 	Cvotes *Cvotes `xml:"votes,omitempty" json:"votes,omitempty"`
 }
@@ -102,6 +123,7 @@ type Cbug_when struct {
 
 type Cbugzilla struct {
 	XMLName xml.Name `xml:"bugzilla,omitempty" json:"bugzilla,omitempty"`
+	Attrexporter string`xml:"exporter,attr"  json:",omitempty"`
 	Attrmaintainer string`xml:"maintainer,attr"  json:",omitempty"`
 	Attrurlbase string`xml:"urlbase,attr"  json:",omitempty"`
 	Attrversion string`xml:"version,attr"  json:",omitempty"`
@@ -116,6 +138,11 @@ type Ccc struct {
 type Ccclist_accessible struct {
 	XMLName xml.Name `xml:"cclist_accessible,omitempty" json:"cclist_accessible,omitempty"`
 	Flag bool `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_build_id struct {
+	XMLName xml.Name `xml:"cf_build_id,omitempty" json:"cf_build_id,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
 }
 
 type Ccf_category struct {
@@ -133,13 +160,38 @@ type Ccf_cloudforms_team struct {
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
+type Ccf_compliance_control_group struct {
+	XMLName xml.Name `xml:"cf_compliance_control_group,omitempty" json:"cf_compliance_control_group,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_compliance_level struct {
+	XMLName xml.Name `xml:"cf_compliance_level,omitempty" json:"cf_compliance_level,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
 type Ccf_crm struct {
 	XMLName xml.Name `xml:"cf_crm,omitempty" json:"cf_crm,omitempty"`
+}
+
+type Ccf_cust_facing struct {
+	XMLName xml.Name `xml:"cf_cust_facing,omitempty" json:"cf_cust_facing,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_devel_whiteboard struct {
+	XMLName xml.Name `xml:"cf_devel_whiteboard,omitempty" json:"cf_devel_whiteboard,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
 }
 
 type Ccf_doc_type struct {
 	XMLName xml.Name `xml:"cf_doc_type,omitempty" json:"cf_doc_type,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_docs_score struct {
+	XMLName xml.Name `xml:"cf_docs_score,omitempty" json:"cf_docs_score,omitempty"`
+	Flag bool `xml:",chardata" json:",omitempty"`
 }
 
 type Ccf_documentation_action struct {
@@ -153,6 +205,11 @@ type Ccf_environment struct {
 
 type Ccf_fixed_in struct {
 	XMLName xml.Name `xml:"cf_fixed_in,omitempty" json:"cf_fixed_in,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_internal_whiteboard struct {
+	XMLName xml.Name `xml:"cf_internal_whiteboard,omitempty" json:"cf_internal_whiteboard,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
@@ -171,6 +228,15 @@ type Ccf_ovirt_team struct {
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
+type Ccf_pgm_internal struct {
+	XMLName xml.Name `xml:"cf_pgm_internal,omitempty" json:"cf_pgm_internal,omitempty"`
+}
+
+type Ccf_pm_score struct {
+	XMLName xml.Name `xml:"cf_pm_score,omitempty" json:"cf_pm_score,omitempty"`
+	Number int16 `xml:",chardata" json:",omitempty"`
+}
+
 type Ccf_regression_status struct {
 	XMLName xml.Name `xml:"cf_regression_status,omitempty" json:"cf_regression_status,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
@@ -181,13 +247,28 @@ type Ccf_release_notes struct {
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
+type Ccf_show_homepage struct {
+	XMLName xml.Name `xml:"cf_show_homepage,omitempty" json:"cf_show_homepage,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
 type Ccf_story_points struct {
 	XMLName xml.Name `xml:"cf_story_points,omitempty" json:"cf_story_points,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
+type Ccf_subsystem_team struct {
+	XMLName xml.Name `xml:"cf_subsystem_team,omitempty" json:"cf_subsystem_team,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
 type Ccf_type struct {
 	XMLName xml.Name `xml:"cf_type,omitempty" json:"cf_type,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ccf_verified struct {
+	XMLName xml.Name `xml:"cf_verified,omitempty" json:"cf_verified,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
 }
 
@@ -240,6 +321,11 @@ type Cdependson struct {
 	Number int32 `xml:",chardata" json:",omitempty"`
 }
 
+type Cestimated_time struct {
+	XMLName xml.Name `xml:"estimated_time,omitempty" json:"estimated_time,omitempty"`
+	Number float32 `xml:",chardata" json:",omitempty"`
+}
+
 type Ceverconfirmed struct {
 	XMLName xml.Name `xml:"everconfirmed,omitempty" json:"everconfirmed,omitempty"`
 	Flag bool `xml:",chardata" json:",omitempty"`
@@ -248,7 +334,16 @@ type Ceverconfirmed struct {
 type Cexternal_bugs struct {
 	XMLName xml.Name `xml:"external_bugs,omitempty" json:"external_bugs,omitempty"`
 	Attrname string`xml:"name,attr"  json:",omitempty"`
-	Number int32 `xml:",chardata" json:",omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Cflag struct {
+	XMLName xml.Name `xml:"flag,omitempty" json:"flag,omitempty"`
+	Attrid string`xml:"id,attr"  json:",omitempty"`
+	Attrname string`xml:"name,attr"  json:",omitempty"`
+	Attrsetter string`xml:"setter,attr"  json:",omitempty"`
+	Attrstatus string`xml:"status,attr"  json:",omitempty"`
+	Attrtype_id string`xml:"type_id,attr"  json:",omitempty"`
 }
 
 type Ckeywords struct {
@@ -285,6 +380,11 @@ type Cqa_contact struct {
 	XMLName xml.Name `xml:"qa_contact,omitempty" json:"qa_contact,omitempty"`
 	Attrname string`xml:"name,attr"  json:",omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Cremaining_time struct {
+	XMLName xml.Name `xml:"remaining_time,omitempty" json:"remaining_time,omitempty"`
+	Number float32 `xml:",chardata" json:",omitempty"`
 }
 
 type Crep_platform struct {
@@ -330,6 +430,11 @@ type Ctarget_release struct {
 
 type Cthetext struct {
 	XMLName xml.Name `xml:"thetext,omitempty" json:"thetext,omitempty"`
+	Content string `xml:",chardata" json:",omitempty"`
+}
+
+type Ctoken struct {
+	XMLName xml.Name `xml:"token,omitempty" json:"token,omitempty"`
 	Content string `xml:",chardata" json:",omitempty"`
 }
 

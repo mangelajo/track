@@ -1,0 +1,194 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<bugzilla version="4.4.12084.1" urlbase="https://bugzilla.redhat.com/" maintainer="bugzilla-owner@redhat.com" exporter="majopela@redhat.com">
+<bug>
+<bug_id>1498162</bug_id>
+<alias>ovn_ipv6_rs</alias>
+<creation_ts>2017-10-03 11:12:00 -0400</creation_ts>
+<short_desc>
+[RFE] OVN: Support IPv6 Router Solicitation responder and Neighbor solicitation generation for unknow MACs
+</short_desc>
+<delta_ts>2018-05-31 22:15:48 -0400</delta_ts>
+<reporter_accessible>1</reporter_accessible>
+<cclist_accessible>1</cclist_accessible>
+<classification_id>1</classification_id>
+<classification>Red Hat</classification>
+<product>Red Hat OpenStack</product>
+<component>openvswitch</component>
+<version>unspecified</version>
+<rep_platform>Unspecified</rep_platform>
+<op_sys>Unspecified</op_sys>
+<bug_status>ASSIGNED</bug_status>
+<resolution/>
+<bug_file_loc/>
+<status_whiteboard/>
+<keywords>FutureFeature, Triaged</keywords>
+<priority>medium</priority>
+<bug_severity>high</bug_severity>
+<target_milestone>Upstream M2</target_milestone>
+<dependson>1567735</dependson>
+<dependson>1580460</dependson>
+<blocked>1498491</blocked>
+<blocked>1525972</blocked>
+<blocked>1548947</blocked>
+<everconfirmed>1</everconfirmed>
+<reporter name="Numan Siddique">nusiddiq@redhat.com</reporter>
+<assigned_to name="Numan Siddique">nusiddiq@redhat.com</assigned_to>
+<cc>apevec@redhat.com</cc>
+<cc>chrisw@redhat.com</cc>
+<cc>dalvarez@redhat.com</cc>
+<cc>ekuris@redhat.com</cc>
+<cc>jlibosva@redhat.com</cc>
+<cc>majopela@redhat.com</cc>
+<cc>nusiddiq@redhat.com</cc>
+<cc>nyechiel@redhat.com</cc>
+<cc>rhos-maint@redhat.com</cc>
+<cc>samccann@redhat.com</cc>
+<cc>srevivo@redhat.com</cc>
+<cc>tfreger@redhat.com</cc>
+<estimated_time>0.00</estimated_time>
+<remaining_time>0.00</remaining_time>
+<actual_time>0.00</actual_time>
+<qa_contact name="Numan Siddique">nusiddiq@redhat.com</qa_contact>
+<cf_fixed_in>openvswitch-2.9.0-3.el7fdb</cf_fixed_in>
+<cf_show_homepage>---</cf_show_homepage>
+<cf_cust_facing>---</cf_cust_facing>
+<cf_internal_whiteboard>DFG:Networking Squad:OVN</cf_internal_whiteboard>
+<cf_devel_whiteboard>ovn osp13add.20Oct17</cf_devel_whiteboard>
+<cf_doc_type>If docs needed, set a value</cf_doc_type>
+<cf_release_notes/>
+<cf_pm_score>801</cf_pm_score>
+<cf_docs_score>0</cf_docs_score>
+<cf_build_id>puddle=2018-03-29.1</cf_build_id>
+<cf_story_points>---</cf_story_points>
+<cf_verified>FailedQA</cf_verified>
+<cf_environment/>
+<cf_type>Bug</cf_type>
+<cf_regression_status>---</cf_regression_status>
+<cf_mount_type>---</cf_mount_type>
+<cf_documentation_action>---</cf_documentation_action>
+<cf_crm/>
+<cf_verified_branch/>
+<cf_pgm_internal/>
+<cf_category>---</cf_category>
+<cf_ovirt_team>---</cf_ovirt_team>
+<cf_cloudforms_team>---</cf_cloudforms_team>
+<cf_compliance_level>---</cf_compliance_level>
+<cf_compliance_control_group>---</cf_compliance_control_group>
+<cf_subsystem_team>---</cf_subsystem_team>
+<external_bugs name="Polarion Requirement">RHELOSP-32545</external_bugs>
+<target_release>13.0 (Queens)</target_release>
+<votes>0</votes>
+<token>
+1528205627-XmeZIOtK_aKLxGpJhsAqoQBQjRqmdFP1TwCY5V2B8q8
+</token>
+<flag name="rhos-13.0" id="3254174" type_id="1042" status="+" setter="pm-rhel@redhat.com"/>
+<flag name="pm_ack" id="3254175" type_id="11" status="+" setter="nyechiel@redhat.com"/>
+<flag name="devel_ack" id="3254176" type_id="10" status="+" setter="majopela@redhat.com"/>
+<flag name="qa_ack" id="3254177" type_id="9" status="+" setter="oblaut@redhat.com"/>
+<comment_sort_order>oldest_to_newest</comment_sort_order>
+<long_desc isprivate="0">
+<commentid>10853108</commentid>
+<comment_count>0</comment_count>
+<who name="Numan Siddique">nusiddiq@redhat.com</who>
+<bug_when>2017-10-03 11:12:27 -0400</bug_when>
+<thetext>
+Description of problem: OVN presently - doesn't support Responding to the Router solicitation requests from the VM's - doesn't generate a NS request to resolve the MAC for packets going out of gateway port if the next hop MAC is unknown. This needs to be supported. Version-Release number of selected component (if applicable): How reproducible: Steps to Reproduce: 1. 2. 3. Actual results: Expected results: Additional info:
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>10900752</commentid>
+<comment_count>1</comment_count>
+<who name="Red Hat Bugzilla Rules Engine">rule-engine@redhat.com</who>
+<bug_when>2017-10-18 16:21:18 -0400</bug_when>
+<thetext>
+This bugzilla has been removed from the Target Release until it has been release planned with 3-acks provided.
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>10907702</commentid>
+<comment_count>2</comment_count>
+<who name="Scott Lewis">sclewis@redhat.com</who>
+<bug_when>2017-10-20 10:21:01 -0400</bug_when>
+<thetext>
+--comment=This item has been properly Triaged and planned for the OSP13 release, and is being tagged for tracking. For details, see https://url.corp.redhat.com/1851efd
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>10907717</commentid>
+<comment_count>3</comment_count>
+<who name="Red Hat Bugzilla Rules Engine">rule-engine@redhat.com</who>
+<bug_when>2017-10-20 10:21:11 -0400</bug_when>
+<thetext>
+This item has been properly Triaged and planned for the release, and Target Release is now set to match the release flag. For details, see https://mojo.redhat.com/docs/DOC-1144661#jive_content_id_OSP_Release_Planning
+</thetext>
+</long_desc>
+<long_desc isprivate="0">
+<commentid>11086484</commentid>
+<comment_count>4</comment_count>
+<who name="Miguel Angel Ajo">majopela@redhat.com</who>
+<bug_when>2017-12-11 06:22:16 -0500</bug_when>
+<thetext>@Numans, is it merged? :)</thetext>
+</long_desc>
+<long_desc isprivate="0">
+<commentid>11086533</commentid>
+<comment_count>5</comment_count>
+<who name="Numan Siddique">nusiddiq@redhat.com</who>
+<bug_when>2017-12-11 06:36:07 -0500</bug_when>
+<thetext>
+@Miguel - Yes. In master. So it would be available in OVS 2.9
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>11138527</commentid>
+<comment_count>6</comment_count>
+<who name="Eran Kuris">ekuris@redhat.com</who>
+<bug_when>2017-12-28 03:23:25 -0500</bug_when>
+<thetext>Please add blueprint/spec for this RFE.</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>11183460</commentid>
+<comment_count>7</comment_count>
+<who name="Numan Siddique">nusiddiq@redhat.com</who>
+<bug_when>2018-01-15 04:43:42 -0500</bug_when>
+<thetext>
+(In reply to Eran Kuris from comment #6) > Please add blueprint/spec for this RFE. https://docs.openstack.org/liberty/networking-guide/adv-config-ipv6.html https://github.com/openvswitch/ovs/commit/52ed5fcc5dddc6ad7a7d500df73032fc1c5133b8 https://github.com/openvswitch/ovs/commit/4364646c6e9898ee74a1e53d36a80a5bb67fc9fb#diff-2c35162acf6ad144624954fdc4c3d9f4
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>11395238</commentid>
+<comment_count>8</comment_count>
+<who name="Sandra McCann">samccann@redhat.com</who>
+<bug_when>2018-03-19 15:34:47 -0400</bug_when>
+<thetext>
+This RFE does not seem to have a customer-facing impact for OVN documentation. Please consider adding doc-text as enhancement so that the Release Notes will pick up this change to OVN. To add draft documentation text: * Select the documentation type from the "Doc Type" drop down field. * A template will be provided in the "Doc Text" field based on the "Doc Type" value selected. Enter draft text in the "Doc Text" field.
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>11432122</commentid>
+<comment_count>9</comment_count>
+<who name="errata-xmlrpc">errata-xmlrpc@redhat.com</who>
+<bug_when>2018-03-29 11:45:08 -0400</bug_when>
+<thetext>
+Bug report changed to ON_QA status by Errata System. A QE request has been submitted for advisory RHEA-2018:32557-02 https://errata.devel.redhat.com/advisory/32557
+</thetext>
+</long_desc>
+<long_desc isprivate="0">
+<commentid>11637962</commentid>
+<comment_count>10</comment_count>
+<who name="Toni Freger">tfreger@redhat.com</who>
+<bug_when>2018-05-27 02:38:11 -0400</bug_when>
+<thetext>
+Moving back to ASSIGNED. This RFE depends on https://bugzilla.redhat.com/show_bug.cgi?id=1567735 that targeted to Zstrem release.
+</thetext>
+</long_desc>
+<long_desc isprivate="1">
+<commentid>11650419</commentid>
+<comment_count>11</comment_count>
+<who name="auto-bz-updater">bugzilla-updater-xmlrpc@redhat.com</who>
+<bug_when>2018-05-29 10:42:17 -0400</bug_when>
+<thetext>
+This bug has been dropped from advisory RHEA-2018:32557 by jschluet@redhat.com
+</thetext>
+</long_desc>
+</bug>
+</bugzilla>

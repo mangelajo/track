@@ -45,13 +45,18 @@ type combinedParser struct {
 	baseParser
 }
 
+type csvDateParser struct {
+	baseParser
+}
+
 func (parser *baseParser) utcNow() (t time.Time) {
 	return time.Now().UTC()
 }
 
 //parse implements chain of commands pattern and tries parsing stupid bugzilla changed date by every means possible
 func (parser *combinedParser) parse(value string) (t time.Time, err error) {
-	parsers := []bugzillaChangedDateParser{&defaultParser{}, &timeParser{}, &dayOfWeekParser{}, &yearMonthDateParser{}}
+	parsers := []bugzillaChangedDateParser{&defaultParser{}, &timeParser{}, &dayOfWeekParser{}, &yearMonthDateParser{},
+	   &csvDateParser{}}
 	var lastErr error
 	for _, item := range parsers {
 		t, err := item.parse(value)
@@ -63,6 +68,11 @@ func (parser *combinedParser) parse(value string) (t time.Time, err error) {
 		}
 	}
 	return time.Time{}, lastErr
+}
+
+func (parser *csvDateParser) parse(value string) (t time.Time, err error) {
+	format := "2006-01-02 15:04:05"
+	return time.Parse(format, value)
 }
 
 func (parser *defaultParser) parse(value string) (t time.Time, err error) {
