@@ -24,6 +24,9 @@ import (
 )
 
 var cfgFile string
+var bzEmail string
+var bzPassword string
+var bzURL string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -55,7 +58,9 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringVarP(&bzURL, "bzurl", "a", "https://bugzilla.redhat.com", "Bugzilla URL")
+	rootCmd.PersistentFlags().StringVarP(&bzEmail,"bzemail", "u", "", "Bugzilla login email")
+	rootCmd.PersistentFlags().StringVarP(&bzPassword,"bzpass", "p", "", "Bugzilla login password")
 }
 
 // initConfig reads in config file and ENV variables if set.

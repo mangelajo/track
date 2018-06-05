@@ -15,14 +15,14 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/mangelajo/track/pkg/bugzilla"
+	"fmt"
 )
 
 // bzListCmd represents the bzList command
 var bzListCmd = &cobra.Command{
-	Use:   "bzList",
+	Use:   "bz-list",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -30,21 +30,40 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("bzList called")
-	},
+	Run: bzList,
 }
 
 func init() {
 	rootCmd.AddCommand(bzListCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// bzListCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// bzListCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
+
+func bzList(cmd *cobra.Command, args []string) {
+
+	fmt.Println("Login in...")
+	client, _ := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
+
+	fmt.Println("List query ..")
+	buglist, _:= client.BugList(50,0)
+
+	for _, bz := range buglist {
+		fmt.Printf("%v\n", bz)
+
+	}
+	fmt.Println("bug info")
+
+	bug,_ := client.BugInfo(1546996)
+	fmt.Printf("%v\n", bug)
+
+	fmt.Println("history:")
+	hist,_ := client.BugHistory(1546996)
+
+	fmt.Printf("%v\n", hist)
+
+	fmt.Println("show_bug:")
+	bi, _ := client.ShowBug(1546996)
+	fmt.Printf("%v\n", bi)
+
+	fmt.Println(bi.Cassigned_to.Content)
+}
+
+
