@@ -80,6 +80,8 @@ type bzBug struct {
 	Resolution  string   `xml:"resolution"`
 	Description string   `xml:"short_desc"`
 	Changed     string   `xml:"changeddate"`
+	Severity 	string   `xml:"bug_severity"`
+	PMScore     int      `xml:"Ccf_pm_score"`
 }
 
 // parseBugzRDF returns list of bugs and their hashes
@@ -97,12 +99,33 @@ func parseBugzRDF(reader io.Reader) (results []bzBug, err error) {
 	return results, nil
 }
 
+func get(colData map[string]string, col string) string {
+	data, ok := colData[col]
+	if !ok {
+		return ""
+	} else {
+		return data
+	}
+}
+
+func getInt(colData map[string]string, col string, defaultVal int) int {
+	str := get(colData, col)
+	num, err := strconv.Atoi(str)
+	if err == nil {
+		return num
+	} else {
+		return defaultVal
+	}
+}
+
+
 // bug_id,"product","component","assigned_to","bug_status","resolution","short_desc","changeddate"
 func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 	csvreader := csv.NewReader(reader)
 
 	// ignore first line header
-	csvreader.Read()
+	cNames, _ := csvreader.Read()
+
 	for {
 		line, error := csvreader.Read()
 		if error == io.EOF {
@@ -110,17 +133,30 @@ func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 		} else if error != nil {
 			return nil, error
 		}
-		bz_id, _ := strconv.Atoi(line[0])
+
+		colData := make(map[string]string)
+
+		for i, data := range line {
+			colData[cNames[i]] = data
+		}
+
+		bz_id := getInt(colData,"bug_id", 0)
+
+		//TODO:mangelajo remove coupling on viper.Get
+
 		results = append(results, bzBug{
 			ID:			 bz_id,
 			URL:         fmt.Sprintf("%s/show_bug.cgi?id=%d", viper.Get("bzurl"), bz_id),
-			Product:     line[1],
-			Component:   line[2],
-			Assignee:    line[3],
-			Status:      line[4],
-			Resolution:  line[5],
-			Description: line[6],
-			Changed:     line[7],
+			Product:     get(colData, "product"),
+			Component:   get(colData, "component"),
+			Assignee:    get(colData, "assigned_to"),
+			Status:      get(colData, "bug_status"),
+			Resolution:  get(colData, "resolution"),
+			Description: get(colData, "short_desc"),
+			Changed:     get(colData, "changeddate"),
+			PMScore:	 getInt(colData, "cf_pm_score", 0),
+			Severity:    get(colData, "severity"),
+
 		})
 	}
 	return results, nil
