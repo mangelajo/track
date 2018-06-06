@@ -93,21 +93,11 @@ func bzList(cmd *cobra.Command, args []string) {
 			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
 		} else {
 
-			fmt.Printf("\nBZ %d (%8s) %s\n", bi.Cbug_id.Number, bi.Cbug_status.Content, bi.Cshort_desc.Content)
-
-			if bi.Cassigned_to != nil {
-				fmt.Printf("  Assigned to: %s\n",bi.Cassigned_to.Content)
-			}
-
-			for _, x:= range bi.Cexternal_bugs {
-
-				fmt.Printf("  ext bug on %s : %s\n", x.Attrname, x.Content)
-			}
+			bi.ShortSummary(bugzilla.USE_COLOR)
 		}
 	}
 
-
-
 }
+
 
 
