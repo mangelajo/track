@@ -174,6 +174,7 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	if query.WhiteBoard != "" {
 		q.Set("cf_internal_whiteboard", query.WhiteBoard)
+		q.Set("cf_internal_whiteboard_type", "substring")
 	}
 
 	if query.AssignedTo != "" {
