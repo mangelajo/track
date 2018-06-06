@@ -25,17 +25,25 @@ func Close() {
 }
 
 // itob returns an 8-byte big endian representation of v.
-func itob(v int) []byte {
-	b := make([]byte, 8)
-	binary.BigEndian.PutUint64(b, uint64(v))
-	return b
+func itob(v int, isXML bool) []byte {
+
+	if !isXML {
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, uint64(v))
+		return b
+	} else {
+		b := make([]byte, 9)
+		binary.BigEndian.PutUint64(b, uint64(v))
+		b[8] = 1
+		return b
+	}
 }
 
 
-func RetrieveCache(bzID int, currentDateTime string) (xmlContent *[]byte, errRes error) {
+func RetrieveCache(bzID int, currentDateTime string, isXml bool) (xmlContent *[]byte, errRes error) {
 
 	db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket(itob(bzID))
+		b := tx.Bucket(itob(bzID, isXml))
 		if b == nil {
 			errRes = errors.New("Not found")
 			return errRes;
@@ -51,14 +59,15 @@ func RetrieveCache(bzID int, currentDateTime string) (xmlContent *[]byte, errRes
 	return xmlContent, errRes
 }
 
-func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte) {
+func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 	var err error
 
 	db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket(itob(bzID))
+		b := tx.Bucket(itob(bzID, isXml))
 		if b == nil {
-			b, err = tx.CreateBucket(itob(bzID))
+			b, err = tx.CreateBucket(itob(bzID, isXml))
 		}
+
 		err := b.Put([]byte("lastDateTime"), []byte(lastDateTime))
 		if err != nil {
 			return err

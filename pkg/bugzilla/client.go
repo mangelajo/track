@@ -127,6 +127,11 @@ func (client *Client) ShowBug(id int, currentTimestamp string)  (bug *Cbug, cach
 	return client.cgi.bugInfo(id, currentTimestamp)
 }
 
+func (client *Client) ShowBugHTML(id int, currentTimestamp string)  (html *[]byte, cached bool, err error) {
+	return client.cgi.bugInfoHTML(id, currentTimestamp)
+}
+
+
 // BugsInfo returns information about selected bugzilla tickets
 func (client *Client) BugsInfo(idList []int) (bugInfo []map[string]interface{}, err error) {
 	bugsInfo, err := client.json.bugsInfo(idList, client.bugzillaToken)

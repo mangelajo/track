@@ -40,6 +40,7 @@ var myBugs bool
 var changedBugs bool
 var componentStr string
 var statusStr string
+var preCacheHTML bool
 
 func init() {
 
@@ -50,6 +51,7 @@ func init() {
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
+	bzListCmd.Flags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
 
 }
 
@@ -106,6 +108,13 @@ func bzList(cmd *cobra.Command, args []string) {
 			bi.Bug.ShortSummary(bugzilla.USE_COLOR)
 		}
 	}
+
+	if preCacheHTML {
+		fmt.Println("Pre caching HTML")
+		grabBugzillasHTMLConcurrently(client, buglist)
+
+	}
+
 }
 
 type BugzillaResponse struct {
@@ -147,6 +156,29 @@ func grabBugzillasConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) 
 	}
 	close(bugs)
 	return bzChan
+}
+
+
+func grabBugzillasHTMLConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) {
+
+	bugs := make(chan bugzilla.Bug, 64)
+	var wg sync.WaitGroup
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			for bz := range bugs {
+				client.ShowBugHTML(bz.ID, bz.Changed.String())
+			}
+			wg.Done()
+		}()
+	}
+
+	// Grab all bugs from the list and push them into the channel
+	for _, bug := range buglist {
+		bugs <- bug
+	}
+	close(bugs)
+	wg.Wait()
 }
 
 

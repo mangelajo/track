@@ -242,9 +242,9 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 
 // bugList list of last changed bugs
 
-func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml *[]byte, cached bool, err error) {
+func (client *bugzillaCGIClient) getBug(id int, currentTimestamp string, getXml bool) (xml *[]byte, cached bool, err error) {
 
-	xml, err = storecache.RetrieveCache(id, currentTimestamp)
+	xml, err = storecache.RetrieveCache(id, currentTimestamp,getXml)
 
 	if err == nil {
 		return xml, true, err
@@ -257,18 +257,19 @@ func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml
 
 	u.Path = "show_bug.cgi"
 	q := u.Query()
-	q.Set("ctype", "xml")
-	q.Set("excludefield", "attachmentdata")
+	if getXml {
+		q.Set("ctype", "xml")
+		q.Set("excludefield", "attachmentdata")
+	}
 	q.Set("id", strconv.Itoa(id))
 
 	u.RawQuery = q.Encode()
 
-	//url = https://bugzilla.mozilla.org/show_bug.cgi?id=xxxxx&ctype=xml
+	//url = https://bugzilla.mozilla.org/show_bug.cgi?...
 	req, err := newHTTPRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, false, err
 	}
-	//req.Header.Set("Accept", "text/xml")
 
 	res, err := client.httpClient.Do(req)
 	defer func() {
@@ -286,7 +287,7 @@ func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml
 
 	body, err := ioutil.ReadAll(res.Body)
 
-	storecache.StoreCache(id, currentTimestamp, &body)
+	storecache.StoreCache(id, currentTimestamp, &body, getXml)
 
 	return &body, false,err
 }
@@ -295,13 +296,27 @@ func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug
 
 	var bugzilla Cbugzilla
 
-	body, cached, err := client.getBugXML(id, currentTimestamp)
+	body, cached, err := client.getBug(id, currentTimestamp, true)
 	err = xml.Unmarshal(*body ,&bugzilla)
 
 	if err != nil {
 		// invalidate cache
-		storecache.StoreCache(id,"xxx", body)
+		storecache.StoreCache(id,"xxx", body, true)
 		return nil, false, err
 	}
 	return bugzilla.Cbug, cached, err
 }
+
+func (client *bugzillaCGIClient) bugInfoHTML(id int, currentTimestamp string) (*[]byte,  bool, error) {
+
+
+	body, cached, err := client.getBug(id, currentTimestamp, false)
+
+	if err != nil {
+		// invalidate cache
+		storecache.StoreCache(id,"xxx", body, false)
+		return nil, false, err
+	}
+	return body, cached, err
+}
+
