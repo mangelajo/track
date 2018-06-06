@@ -70,13 +70,15 @@ func findRHQuery(name string) string {
 func bzRhQuery(cmd *cobra.Command, args []string) {
 
 	if len(args)<1 {
-		panic("We need at least one target URL, for example network-dfg-untriaged")
+		fmt.Println("We need at least one target URL, for example network-dfg-untriaged")
+		os.Exit(1)
 	}
 
-	url_query := findRHQuery(args[0])
+	urlQuery := findRHQuery(args[0])
 
-	if url_query == "" {
-		panic(fmt.Errorf("No bugzilla query found for %s", args[0]))
+	if urlQuery == "" {
+		fmt.Printf("No bugzilla query found for %s\n", args[0])
+		os.Exit(1)
 	}
 
 	client := getClient()
