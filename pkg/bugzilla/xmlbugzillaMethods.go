@@ -15,6 +15,7 @@ func (extbug *Cexternal_bugs) URL() string {
 	case "OpenStack gerrit": 					sfmt = "https://review.openstack.org/#/c/%s/"
 	case "OpenStack Storyboard":				sfmt = "https://storyboard.openstack.org/#!/story/%s"
 	case "Launchpad":							sfmt = "https://bugs.launchpad.net/bugs/%s"
+	case "Trello":								sfmt = "https://trello.com/c/%s"
 	default:
 		sfmt = "%s"
 	}
