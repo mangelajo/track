@@ -26,7 +26,6 @@ func Close() {
 
 // itob returns an 8-byte big endian representation of v.
 func itob(v int, isXML bool) []byte {
-
 	if !isXML {
 		b := make([]byte, 8)
 		binary.BigEndian.PutUint64(b, uint64(v))

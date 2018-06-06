@@ -29,6 +29,7 @@ var bzEmail string
 var bzPassword string
 var bzURL string
 var workers int
+var preCacheHTML bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -63,16 +64,23 @@ func init() {
 	rootCmd.PersistentFlags().StringP("bzurl", "a", "https://bugzilla.redhat.com", "Bugzilla URL")
 	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
 	rootCmd.PersistentFlags().StringP("bzpass", "p", "", "Bugzilla login password")
+	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "o", "xdg-open", "Command to open an html file")
 	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
+	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
 
 }
 
 func exampleTrackYaml() {
-	fmt.Print("\nAn example ~/.track.yaml:\n\n" +
-			  "bzurl: https://bugzilla.redhat.com\n" +
-			  "bzemail: xxxxx@redhat.com\n" +
-			  "bzpass: xxxxxxxx\n" +
-			  "dfg: Networking\n\n")
+	fmt.Print(`
+An example ~/.track.yaml:
+
+bzurl: https://bugzilla.redhat.com
+bzemail: xxxxx@redhat.com
+bzpass: xxxxxxxx
+dfg: Networking
+htmlOpenCommand: xdg-open
+
+`)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -100,7 +108,7 @@ func initConfig() {
 		fmt.Printf("Could not read config file: %s \n", err)
 	}
 
-	for _, k := range []string {"bzurl", "bzemail", "bzpass"} {
+	for _, k := range []string {"bzurl", "bzemail", "bzpass", "htmlOpenCommand"} {
 		viper.BindPFlag(k, rootCmd.PersistentFlags().Lookup(k))
 	}
 

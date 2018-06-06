@@ -40,7 +40,7 @@ var myBugs bool
 var changedBugs bool
 var componentStr string
 var statusStr string
-var preCacheHTML bool
+
 
 func init() {
 
@@ -51,7 +51,6 @@ func init() {
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
-	bzListCmd.Flags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
 
 }
 
@@ -167,7 +166,14 @@ func grabBugzillasHTMLConcurrently(client *bugzilla.Client, buglist []bugzilla.B
 		wg.Add(1)
 		go func() {
 			for bz := range bugs {
-				client.ShowBugHTML(bz.ID, bz.Changed.String())
+				_, cached, err := client.ShowBugHTML(bz.ID, bz.Changed.String())
+
+				if err != nil {
+					fmt.Printf("Error grabbing %d : %s\n", bz.ID, err)
+				} else if !cached {
+					fmt.Printf(" - bz#%d cached\n", bz.ID)
+				}
+
 			}
 			wg.Done()
 		}()

@@ -92,17 +92,21 @@ func bzRhQuery(cmd *cobra.Command, args []string) {
 	buglist, _ := client.BugList(&bugzilla.BugListQuery{CustomQuery: urlQuery})
 
 	for _, bz := range buglist {
-		fmt.Printf("%v\n", bz)
+		fmt.Printf("%s\n", bz.String())
 	}
 
-	for _, bug := range buglist {
-		bi, _, err := client.ShowBug(bug.ID, bug.Changed.String())
-		if bi == nil || err != nil {
-			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
-		} else {
+	bzChan := grabBugzillasConcurrently(client, buglist)
 
-			bi.ShortSummary(bugzilla.USE_COLOR)
+	for bi := range bzChan {
+		if !changedBugs || (changedBugs && !bi.Cached) {
+			bi.Bug.ShortSummary(bugzilla.USE_COLOR)
 		}
+	}
+
+	if preCacheHTML {
+		fmt.Println("Pre caching HTML")
+		grabBugzillasHTMLConcurrently(client, buglist)
+
 	}
 
 }
