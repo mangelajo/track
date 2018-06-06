@@ -44,13 +44,6 @@ const CLS_REDHAT = "Red Hat"
 
 func bzList(cmd *cobra.Command, args []string) {
 
-	if bzEmail == "" {
-		panic(fmt.Errorf("No email address provided either in parameters or ~/.track.yaml file"))
-	}
-	if bzPassword == "" {
-		panic(fmt.Errorf("No bz password provided either in parameters or ~/.track.yaml file"))
-	}
-
 	client, err := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
 
 	if err != nil || client == nil {
@@ -65,8 +58,6 @@ func bzList(cmd *cobra.Command, args []string) {
 		BugStatus:      BZ_NEW_ASSIGNED,
 		WhiteBoard:     whiteBoardQuery,
 	}
-
-	fmt.Println(whiteBoardQuery)
 
 	if myBugs {
 		query.AssignedTo = bzEmail

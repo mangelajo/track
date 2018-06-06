@@ -112,5 +112,15 @@ func initConfig() {
 		whiteBoardQuery += fmt.Sprintf(" Squad:%s", viper.GetString("squad"))
 	}
 
+	if bzURL == "" {
+		panic(fmt.Errorf("No bz url provided either in parameters or ~/.track.yaml file"))
+	}
+
+	if bzEmail == "" {
+		panic(fmt.Errorf("No email address provided either in parameters or ~/.track.yaml file"))
+	}
+	if bzPassword == "" {
+		panic(fmt.Errorf("No bz password provided either in parameters or ~/.track.yaml file"))
+	}
 
 }
