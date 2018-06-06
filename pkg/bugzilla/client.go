@@ -88,6 +88,7 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 }
 
 type BugListQuery struct {
+	CustomQuery string
 	Limit int
 	Offset int
 	Order string

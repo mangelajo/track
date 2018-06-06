@@ -128,20 +128,22 @@ func (client *bugzillaCGIClient) login(login string, password string) (err error
 	return nil
 }
 
-// bugList list of last changed bugs
-func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
-
-	u, err := url.Parse(client.bugzillaAddr)
-	if err != nil {
-		return nil, err
-	}
+func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	u.Path = "buglist.cgi"
 
+	if query.CustomQuery != "" {
+		u.RawQuery = query.CustomQuery + "&ctype=csv&human=1"
+		url := u.String()
+		u.RawQuery = query.CustomQuery
+		referer := u.String()
+		return url, referer
+	}
+
 	q := u.Query()
 
-	//q.Set("ctype", "rdf")
 	q.Set("ctype","csv")
+	q.Set("human", "1") // If we don't use this flag it will ignore some filters
 	q.Set("query_format", "advanced")
 	q.Set("limit", strconv.Itoa(query.Limit))
 	q.Set("offset", strconv.Itoa(query.Offset))
@@ -177,9 +179,29 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 	}
 
 	u.RawQuery = q.Encode()
+	return u.String(), ""
+}
+
+// bugList list of last changed bugs
+func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
+
+	u, err := url.Parse(client.bugzillaAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	url, referer := setupQuery(u, query)
 
 	//url = https://bugzilla.mozilla.org/buglist.cgi?format=simple&limit=4&query_format=advanced&offset=400&order=changeddate%20DESC
-	req, err := newHTTPRequest("GET", u.String(), nil)
+
+	req, err := newHTTPRequest("GET", url , nil)
+	req.Header.Set("Upgrade-Insecure-Request", "1")
+	req.Header.Set("DNT", "1")
+
+	// For some weird reason it doesn't return the right list if no Referer is set
+	if referer != "" {
+		req.Header.Set("Referer", referer)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -198,7 +220,6 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 		return nil, err
 	}
 
-	//bugList, err := parseBugzRDF(res.Body)
 	bugList, err := parseBugzCSV(res.Body)
 
 	if err != nil {

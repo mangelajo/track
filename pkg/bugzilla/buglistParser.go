@@ -140,22 +140,22 @@ func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 			colData[cNames[i]] = data
 		}
 
-		bz_id := getInt(colData,"bug_id", 0)
+		bz_id := getInt(colData,"Bug ID", 0)
 
 		//TODO:mangelajo remove coupling on viper.Get
 
 		results = append(results, bzBug{
 			ID:			 bz_id,
 			URL:         fmt.Sprintf("%s/show_bug.cgi?id=%d", viper.Get("bzurl"), bz_id),
-			Product:     get(colData, "product"),
-			Component:   get(colData, "component"),
-			Assignee:    get(colData, "assigned_to"),
-			Status:      get(colData, "bug_status"),
-			Resolution:  get(colData, "resolution"),
-			Description: get(colData, "short_desc"),
-			Changed:     get(colData, "changeddate"),
-			PMScore:	 getInt(colData, "cf_pm_score", 0),
-			Severity:    get(colData, "severity"),
+			Product:     get(colData, "Product"),
+			Component:   get(colData, "Component"),
+			Assignee:    get(colData, "Assignee"),
+			Status:      get(colData, "Status"),
+			Resolution:  get(colData, "Resolution"),
+			Description: get(colData, "Summary"),
+			Changed:     get(colData, "Changed"),
+			PMScore:	 getInt(colData, "PM Score", 0),
+			Severity:    get(colData, "Severity"),
 
 		})
 	}
