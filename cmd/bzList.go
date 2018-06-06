@@ -18,6 +18,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/mangelajo/track/pkg/bugzilla"
 	"fmt"
+	"sync"
+	"github.com/spf13/viper"
 )
 
 // bzListCmd represents the bzList command
@@ -33,14 +35,37 @@ to quickly create a Cobra application.`,
 	Run: bzList,
 }
 
+var myBugs bool
+
 func init() {
+
 	rootCmd.AddCommand(bzListCmd)
+	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
+	bzListCmd.Flags().StringP("squad", "s", "", "Openstack DFG Squad")
+	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
+
 }
 
 const RH_OPENSTACK_PRODUCT = "Red Hat OpenStack"
 const CMP_NETWORKING_OVN = "python-networking-ovn"
 var BZ_NEW_ASSIGNED = []string {"NEW", "ASSIGNED"}
 const CLS_REDHAT = "Red Hat"
+
+func getWhiteBoardQuery() string {
+	whiteBoardQuery := ""
+
+	if viper.GetString("dfg") != "" {
+		whiteBoardQuery += fmt.Sprintf("DFG:%s", viper.GetString("dfg"))
+	}
+
+	if viper.GetString("squad") != "" {
+		if viper.GetString("dfg") != "" {
+			whiteBoardQuery += " "
+		}
+		whiteBoardQuery += fmt.Sprintf("Squad:%s", viper.GetString("squad"))
+	}
+	return whiteBoardQuery
+}
 
 func bzList(cmd *cobra.Command, args []string) {
 
@@ -52,7 +77,7 @@ func bzList(cmd *cobra.Command, args []string) {
 		Classification: CLS_REDHAT,
 		Product:        RH_OPENSTACK_PRODUCT,
 		BugStatus:      BZ_NEW_ASSIGNED,
-		WhiteBoard:     whiteBoardQuery,
+		WhiteBoard:     getWhiteBoardQuery(),
 	}
 
 	if myBugs {
@@ -65,16 +90,41 @@ func bzList(cmd *cobra.Command, args []string) {
 		fmt.Printf("%v\n", bz)
 	}
 
-	for _, bug := range buglist {
-		bi, err := client.ShowBug(bug.ID, bug.Changed.String())
-		if bi == nil || err != nil {
-			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
-		} else {
+	bugs := make(chan bugzilla.Bug, 64)
+	bzChan := make(chan bugzilla.Cbug, 64)
 
-			bi.ShortSummary(bugzilla.USE_COLOR)
-		}
+	var wg sync.WaitGroup
+
+	for i := 0 ; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			for bz := range bugs {
+				bi, err := client.ShowBug(bz.ID, bz.Changed.String())
+				if bi == nil || err != nil {
+					fmt.Printf("Error grabbing bug %d : %s", bz.ID, err)
+				} else {
+					bzChan <- *bi
+				}
+			}
+			wg.Done()
+		}()
 	}
 
+	// when all workers have finished we close the output channel
+	go func() {
+		wg.Wait()
+		close(bzChan)
+	}()
+
+	for _, bug := range buglist {
+		bugs <- bug
+	}
+	close(bugs)
+
+
+	for bi := range bzChan {
+		bi.ShortSummary(bugzilla.USE_COLOR)
+	}
 }
 
 

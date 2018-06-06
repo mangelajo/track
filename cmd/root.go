@@ -28,8 +28,7 @@ var cfgFile string
 var bzEmail string
 var bzPassword string
 var bzURL string
-var whiteBoardQuery string
-var myBugs bool
+var workers int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -64,9 +63,16 @@ func init() {
 	rootCmd.PersistentFlags().StringP("bzurl", "a", "https://bugzilla.redhat.com", "Bugzilla URL")
 	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
 	rootCmd.PersistentFlags().StringP("bzpass", "p", "", "Bugzilla login password")
-	rootCmd.PersistentFlags().StringP("dfg", "d", "", "Openstack DFG")
-	rootCmd.PersistentFlags().StringP("squad", "s", "", "Openstack DFG Squad")
-	rootCmd.PersistentFlags().BoolVarP(&myBugs,"my-bugs", "m", false,"List only my bugs")
+	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
+
+}
+
+func exampleTrackYaml() {
+	fmt.Print("\nAn example ~/.track.yaml:\n\n" +
+			  "bzurl: https://bugzilla.redhat.com\n" +
+			  "bzemail: xxxxx@redhat.com\n" +
+			  "bzpass: xxxxxxxx\n" +
+			  "dfg: Networking\n\n")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -94,34 +100,34 @@ func initConfig() {
 		fmt.Printf("Could not read config file: %s \n", err)
 	}
 
-	for _, k := range []string {"bzurl", "bzemail", "bzpass", "dfg", "squad"} {
+	for _, k := range []string {"bzurl", "bzemail", "bzpass"} {
 		viper.BindPFlag(k, rootCmd.PersistentFlags().Lookup(k))
 	}
+
+	for _, k := range []string {"dfg", "squad"} {
+		viper.BindPFlag(k, bzListCmd.Flags().Lookup(k))
+	}
+
 
 	bzURL = viper.GetString("bzurl")
 	bzPassword = viper.GetString("bzpass")
 	bzEmail = viper.GetString("bzemail")
-	whiteBoardQuery = ""
-	if viper.GetString("dfg") != "" {
-		whiteBoardQuery += fmt.Sprintf("DFG:%s", viper.GetString("dfg"))
-	}
-
-	if viper.GetString("squad") != "" {
-		if viper.GetString("dfg") == "" {
-			panic(fmt.Errorf("When specifying a squad, please provide DFG too"))
-		}
-		whiteBoardQuery += fmt.Sprintf(" Squad:%s", viper.GetString("squad"))
-	}
 
 	if bzURL == "" {
-		panic(fmt.Errorf("No bz url provided either in parameters or ~/.track.yaml file"))
+		fmt.Println("No bz url provided either in parameters or ~/.track.yaml file")
+		exampleTrackYaml()
+		os.Exit(1)
 	}
 
 	if bzEmail == "" {
-		panic(fmt.Errorf("No email address provided either in parameters or ~/.track.yaml file"))
+		fmt.Println("No email address provided either in parameters or ~/.track.yaml file")
+		exampleTrackYaml()
+		os.Exit(1)
 	}
 	if bzPassword == "" {
-		panic(fmt.Errorf("No bz password provided either in parameters or ~/.track.yaml file"))
+		fmt.Println("No bz password provided either in parameters or ~/.track.yaml file")
+		exampleTrackYaml()
+		os.Exit(1)
 	}
 
 }
