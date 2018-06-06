@@ -88,13 +88,20 @@ func bzList(cmd *cobra.Command, args []string) {
 	fmt.Println("show_bug:")
 
 	for _, bug := range buglist {
-		bi, err := client.ShowBug(bug.ID)
+		bi, err := client.ShowBug(bug.ID, bug.Changed.String())
 		if bi == nil || err != nil {
 			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
 		} else {
-			fmt.Printf("%v\n", bi)
+
+			fmt.Printf("\nBZ %d (%8s) %s\n", bi.Cbug_id.Number, bi.Cbug_status.Content, bi.Cshort_desc.Content)
+
 			if bi.Cassigned_to != nil {
-				fmt.Println(bi.Cassigned_to.Content)
+				fmt.Printf("  Assigned to: %s\n",bi.Cassigned_to.Content)
+			}
+
+			for _, x:= range bi.Cexternal_bugs {
+
+				fmt.Printf("  ext bug on %s : %s\n", x.Attrname, x.Content)
 			}
 		}
 	}

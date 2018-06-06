@@ -8,7 +8,7 @@ all: pkg/bugzilla/xmlbugzilla.go track
 pkg/bugzilla/xmlbugzilla.go: tools/gen_xml_code.sh
 	tools/gen_xml_code.sh > $@
 
-track: Makefile pkg/bugzilla/*.go cmd/*.go main.go
+track: Makefile pkg/bugzilla/*.go pkg/storecache/*.go cmd/*.go main.go
 	go build -ldflags ${LDFLAGS} -o track main.go
 
 test:

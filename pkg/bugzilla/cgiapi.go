@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"encoding/xml"
+	"github.com/mangelajo/track/pkg/storecache"
 )
 
 // bugzillaCGIClient bugzilla REST API client
@@ -216,7 +217,15 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 
 
 // bugList list of last changed bugs
-func (client *bugzillaCGIClient) bugInfo(id int) (*Cbug, error) {
+
+func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml *[]byte, err error) {
+
+	xml, err = storecache.RetrieveCache(id, currentTimestamp)
+
+	if err == nil {
+		return xml, err
+	}
+
 	u, err := url.Parse(client.bugzillaAddr)
 	if err != nil {
 		return nil, err
@@ -225,6 +234,7 @@ func (client *bugzillaCGIClient) bugInfo(id int) (*Cbug, error) {
 	u.Path = "show_bug.cgi"
 	q := u.Query()
 	q.Set("ctype", "xml")
+	q.Set("excludefield", "attachmentdata")
 	q.Set("id", strconv.Itoa(id))
 
 	u.RawQuery = q.Encode()
@@ -249,15 +259,25 @@ func (client *bugzillaCGIClient) bugInfo(id int) (*Cbug, error) {
 		return nil, err
 	}
 
-	var bugzilla Cbugzilla
 
 	body, err := ioutil.ReadAll(res.Body)
-	err = xml.Unmarshal(body ,&bugzilla)
+
+	storecache.StoreCache(id, currentTimestamp, &body)
+
+	return &body, err
+}
+
+func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug, error) {
+
+	var bugzilla Cbugzilla
+
+	body, err := client.getBugXML(id, currentTimestamp)
+	err = xml.Unmarshal(*body ,&bugzilla)
 
 	if err != nil {
+		// invalidate cache
+		storecache.StoreCache(id,"xxx", body)
 		return nil, err
 	}
-
-
 	return bugzilla.Cbug, err
 }

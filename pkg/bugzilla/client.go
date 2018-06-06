@@ -122,8 +122,8 @@ func (client *Client) BugInfo(id int) (bugInfo map[string]interface{}, err error
 	return bugsInfo[0], nil
 }
 
-func (client *Client) ShowBug(id int)  (bug *Cbug, err error) {
-	return client.cgi.bugInfo(id)
+func (client *Client) ShowBug(id int, currentTimestamp string)  (bug *Cbug, err error) {
+	return client.cgi.bugInfo(id, currentTimestamp)
 }
 
 // BugsInfo returns information about selected bugzilla tickets

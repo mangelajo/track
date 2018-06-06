@@ -14,8 +14,18 @@
 
 package main
 
-import "github.com/mangelajo/track/cmd"
+import (
+	"github.com/mangelajo/track/cmd"
+	"github.com/mangelajo/track/pkg/storecache"
+	"os/user"
+	"path/filepath"
+)
 
 func main() {
+	usr, _ := user.Current()
+	dir := usr.HomeDir
+
+	storecache.Open(filepath.Join(dir, ".track.db"))
 	cmd.Execute()
+	storecache.Close()
 }
