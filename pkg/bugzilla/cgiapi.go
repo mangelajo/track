@@ -143,6 +143,8 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 	q := u.Query()
 
 	q.Set("ctype","csv")
+	q.Set("columnlist","product,component,bug_severity,cf_pm_score,"+
+		                    "assigned_to,bug_status,short_desc,changeddate")
 	q.Set("human", "1") // If we don't use this flag it will ignore some filters
 	q.Set("query_format", "advanced")
 	q.Set("limit", strconv.Itoa(query.Limit))
