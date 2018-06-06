@@ -76,16 +76,7 @@ func bzList(cmd *cobra.Command, args []string) {
 
 	for _, bz := range buglist {
 		fmt.Printf("%v\n", bz)
-
 	}
-	//fmt.Println("bug info")
-
-	//bug,_ := client.BugInfo(1546996)
-	//hist,_ := client.BugHistory(1546996)
-
-	//fmt.Printf("%v\n", hist)
-
-	fmt.Println("show_bug:")
 
 	for _, bug := range buglist {
 		bi, err := client.ShowBug(bug.ID, bug.Changed.String())
