@@ -96,7 +96,7 @@ func bzRhQuery(cmd *cobra.Command, args []string) {
 	}
 
 	for _, bug := range buglist {
-		bi, err := client.ShowBug(bug.ID, bug.Changed.String())
+		bi, _, err := client.ShowBug(bug.ID, bug.Changed.String())
 		if bi == nil || err != nil {
 			fmt.Printf("Error grabbing bug %d : %s", bug.ID, err)
 		} else {

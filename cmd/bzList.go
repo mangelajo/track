@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"sync"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 // bzListCmd represents the bzList command
@@ -36,19 +37,24 @@ to quickly create a Cobra application.`,
 }
 
 var myBugs bool
+var changedBugs bool
+var componentStr string
+var statusStr string
 
 func init() {
 
 	rootCmd.AddCommand(bzListCmd)
 	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
-	bzListCmd.Flags().StringP("squad", "s", "", "Openstack DFG Squad")
+	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
+	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED", "Status list separated by commas")
+	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
+	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
 
 }
 
 const RH_OPENSTACK_PRODUCT = "Red Hat OpenStack"
 const CMP_NETWORKING_OVN = "python-networking-ovn"
-var BZ_NEW_ASSIGNED = []string {"NEW", "ASSIGNED"}
 const CLS_REDHAT = "Red Hat"
 
 func getWhiteBoardQuery() string {
@@ -71,12 +77,15 @@ func bzList(cmd *cobra.Command, args []string) {
 
 	client := getClient()
 
+	statusSelectors := strings.Split(statusStr, ",")
+
 	query := bugzilla.BugListQuery{
 		Limit:          50,
 		Offset:         0,
 		Classification: CLS_REDHAT,
 		Product:        RH_OPENSTACK_PRODUCT,
-		BugStatus:      BZ_NEW_ASSIGNED,
+		Component: 		componentStr,
+		BugStatus:      statusSelectors,
 		WhiteBoard:     getWhiteBoardQuery(),
 	}
 
@@ -87,44 +96,57 @@ func bzList(cmd *cobra.Command, args []string) {
 	buglist, _:= client.BugList(&query)
 
 	for _, bz := range buglist {
-		fmt.Printf("%v\n", bz)
+		fmt.Printf("%s\n", bz.String())
 	}
 
+	bzChan := grabBugzillasConcurrently(client, buglist)
+
+	for bi := range bzChan {
+		if !changedBugs || (changedBugs && !bi.Cached) {
+			bi.Bug.ShortSummary(bugzilla.USE_COLOR)
+		}
+	}
+}
+
+type BugzillaResponse struct {
+	Cached bool
+	Bug bugzilla.Cbug
+}
+
+func grabBugzillasConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) chan BugzillaResponse {
+
 	bugs := make(chan bugzilla.Bug, 64)
-	bzChan := make(chan bugzilla.Cbug, 64)
-
+	bzChan := make(chan BugzillaResponse, 64)
 	var wg sync.WaitGroup
-
-	for i := 0 ; i < workers; i++ {
+	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func() {
 			for bz := range bugs {
-				bi, err := client.ShowBug(bz.ID, bz.Changed.String())
+				bi, cached, err := client.ShowBug(bz.ID, bz.Changed.String())
 				if bi == nil || err != nil {
 					fmt.Printf("Error grabbing bug %d : %s", bz.ID, err)
 				} else {
-					bzChan <- *bi
+					bzChan <- BugzillaResponse{
+						Cached: cached,
+						Bug:    *bi,
+					}
 				}
 			}
 			wg.Done()
 		}()
 	}
-
 	// when all workers have finished we close the output channel
 	go func() {
 		wg.Wait()
 		close(bzChan)
 	}()
 
+	// Grab all bugs from the list and push them into the channel
 	for _, bug := range buglist {
 		bugs <- bug
 	}
 	close(bugs)
-
-
-	for bi := range bzChan {
-		bi.ShortSummary(bugzilla.USE_COLOR)
-	}
+	return bzChan
 }
 
 

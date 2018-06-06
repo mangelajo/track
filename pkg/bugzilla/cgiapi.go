@@ -144,7 +144,7 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	q.Set("ctype","csv")
 	q.Set("columnlist","product,component,bug_severity,cf_pm_score,"+
-		                    "assigned_to,bug_status,short_desc,changeddate")
+		                    "assigned_to,bug_status,short_desc,changeddate,resolution")
 	q.Set("human", "1") // If we don't use this flag it will ignore some filters
 	q.Set("query_format", "advanced")
 	q.Set("limit", strconv.Itoa(query.Limit))
@@ -242,17 +242,17 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 
 // bugList list of last changed bugs
 
-func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml *[]byte, err error) {
+func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml *[]byte, cached bool, err error) {
 
 	xml, err = storecache.RetrieveCache(id, currentTimestamp)
 
 	if err == nil {
-		return xml, err
+		return xml, true, err
 	}
 
 	u, err := url.Parse(client.bugzillaAddr)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	u.Path = "show_bug.cgi"
@@ -266,7 +266,7 @@ func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml
 	//url = https://bugzilla.mozilla.org/show_bug.cgi?id=xxxxx&ctype=xml
 	req, err := newHTTPRequest("GET", u.String(), nil)
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 	//req.Header.Set("Accept", "text/xml")
 
@@ -278,9 +278,9 @@ func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml
 	}()
 	if err != nil {
 		if strings.Contains(err.Error(), "use of closed network connection") {
-			return nil, fmt.Errorf("Timeout occured while accessing %v", req.URL)
+			return nil, false, fmt.Errorf("Timeout occured while accessing %v", req.URL)
 		}
-		return nil, err
+		return nil, false, err
 	}
 
 
@@ -288,20 +288,20 @@ func (client *bugzillaCGIClient) getBugXML(id int, currentTimestamp string) (xml
 
 	storecache.StoreCache(id, currentTimestamp, &body)
 
-	return &body, err
+	return &body, false,err
 }
 
-func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug, error) {
+func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug,  bool, error) {
 
 	var bugzilla Cbugzilla
 
-	body, err := client.getBugXML(id, currentTimestamp)
+	body, cached, err := client.getBugXML(id, currentTimestamp)
 	err = xml.Unmarshal(*body ,&bugzilla)
 
 	if err != nil {
 		// invalidate cache
 		storecache.StoreCache(id,"xxx", body)
-		return nil, err
+		return nil, false, err
 	}
-	return bugzilla.Cbug, err
+	return bugzilla.Cbug, cached, err
 }

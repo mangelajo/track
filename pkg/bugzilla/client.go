@@ -123,7 +123,7 @@ func (client *Client) BugInfo(id int) (bugInfo map[string]interface{}, err error
 	return bugsInfo[0], nil
 }
 
-func (client *Client) ShowBug(id int, currentTimestamp string)  (bug *Cbug, err error) {
+func (client *Client) ShowBug(id int, currentTimestamp string)  (bug *Cbug, cached bool, err error) {
 	return client.cgi.bugInfo(id, currentTimestamp)
 }
 
