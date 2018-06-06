@@ -70,7 +70,13 @@ func findRHQuery(name string) string {
 func bzRhQuery(cmd *cobra.Command, args []string) {
 
 	if len(args)<1 {
-		fmt.Println("We need at least one target URL, for example network-dfg-untriaged")
+		fmt.Println("We need at least one target URL, for example:")
+		fmt.Println("")
+		fmt.Println(" - network-dfg-untriaged")
+		fmt.Println(" - network-dfg-untriaged-customers")
+		fmt.Println(" - network-dfg-untriaged-ci")
+		fmt.Println(" - network-dfg-triaged-error")
+		fmt.Println("")
 		os.Exit(1)
 	}
 
