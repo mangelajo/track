@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"os"
 )
 
 
@@ -68,12 +69,6 @@ func findRHQuery(name string) string {
 
 func bzRhQuery(cmd *cobra.Command, args []string) {
 
-	client, err := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
-
-	if err != nil || client == nil {
-		panic(fmt.Errorf("Problem during login to bugzilla: %s", err))
-	}
-
 	if len(args)<1 {
 		panic("We need at least one target URL, for example network-dfg-untriaged")
 	}
@@ -84,7 +79,9 @@ func bzRhQuery(cmd *cobra.Command, args []string) {
 		panic(fmt.Errorf("No bugzilla query found for %s", args[0]))
 	}
 
-	buglist, _:= client.BugList(&bugzilla.BugListQuery {CustomQuery: url_query})
+	client := getClient()
+
+	buglist, _ := client.BugList(&bugzilla.BugListQuery{CustomQuery: urlQuery})
 
 	for _, bz := range buglist {
 		fmt.Printf("%v\n", bz)

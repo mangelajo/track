@@ -21,6 +21,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/mangelajo/track/pkg/bugzilla"
 )
 
 var cfgFile string
@@ -123,4 +124,13 @@ func initConfig() {
 		panic(fmt.Errorf("No bz password provided either in parameters or ~/.track.yaml file"))
 	}
 
+}
+
+func getClient() *bugzilla.Client {
+	client, err := bugzilla.NewClient(bzURL, bzEmail, bzPassword)
+	if err != nil || client == nil {
+		fmt.Printf("Problem during login to bugzilla: %s\n", err)
+		os.Exit(1)
+	}
+	return client
 }

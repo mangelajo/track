@@ -44,11 +44,7 @@ const CLS_REDHAT = "Red Hat"
 
 func bzList(cmd *cobra.Command, args []string) {
 
-	client, err := bugzilla.NewClient(bzURL, bzEmail,  bzPassword)
-
-	if err != nil || client == nil {
-		panic(fmt.Errorf("Problem during login to bugzilla: %s", err))
-	}
+	client := getClient()
 
 	query := bugzilla.BugListQuery{
 		Limit:          50,
