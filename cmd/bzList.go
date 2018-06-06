@@ -26,13 +26,9 @@ import (
 // bzListCmd represents the bzList command
 var bzListCmd = &cobra.Command{
 	Use:   "bz-list",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "List bugzillas based on parameters and configuration",
+	Long: `This command will list and retrieve details for bugzillas
+based on configuration and query.`,
 	Run: bzList,
 }
 

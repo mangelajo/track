@@ -35,7 +35,7 @@ var preCacheHTML bool
 var rootCmd = &cobra.Command{
 	Use:   "track",
 	Short: "Track helps you handle tasks, bugs, rfes across platforms",
-	Long: `Track helps hou track tasks, bugs, RFEs linked across platforms
+	Long: `Track helps you track tasks, bugs, RFEs linked across platforms
 like bugzilla, trello, launchpad, etc.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:

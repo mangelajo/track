@@ -28,8 +28,10 @@ import (
 
 var bzShowCmd = &cobra.Command{
 	Use:   "bz-show",
-	Short: "Grab cached HTML for bugzilla",
-	Long: ``,
+	Short: "Open cached HTML for bugzilla",
+	Long: `This command will open a cached HTML, or grab it from bugzilla and
+open it. It will use the command specified in the -openHtmlCommand parameter,
+or in the ~/.track.yaml file`,
 	Run: bzShow,
 }
 
@@ -84,18 +86,21 @@ func openHTML(bzid int, html *[]byte) {
 func writeHTML(html *[]byte, outputFile string) {
 	htmlStr := string(*html)
 
+	// This rewrites the links in the html from relative to absolute
 	htmlStr = strings.Replace(htmlStr,"src=\"", "src=\"" + viper.Get("bzurl").(string) + "/" , -1)
 	htmlStr = strings.Replace(htmlStr,"href=\"", "href=\"" + viper.Get("bzurl").(string) + "/" , -1)
 	htmlStr = strings.Replace(htmlStr,"action=\"", "action=\"" + viper.Get("bzurl").(string) + "/" , -1)
 
-
-
-	f, _ := os.Create(outputFile)
+	f, err := os.Create(outputFile)
 	defer f.Close()
+
+	if err != nil {
+		fmt.Printf("Error creating %s : %s", outputFile, err)
+		os.Exit(1)
+	}
 
 	data := []byte(htmlStr)
 	f.Write(data)
-
 
 }
 
