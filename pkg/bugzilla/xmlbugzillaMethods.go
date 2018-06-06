@@ -36,10 +36,12 @@ func (bi *Cbug) ShortSummary(useColor bool)  {
 	if useColor {
 		color.Set(color.FgWhite, color.Bold)
 	}
-	fmt.Printf("\nBZ %d (%8s) %s\n", bi.Cbug_id.Number, bi.Cbug_status.Content, bi.Cshort_desc.Content)
+	fmt.Printf("BZ %d (%8s) %s\n", bi.Cbug_id.Number, bi.Cbug_status.Content, bi.Cshort_desc.Content)
 	if useColor {
 		color.Unset()
 	}
+	fmt.Printf("  Product: %s ver: %s target: %s (%s)\n", bi.Cproduct.Content, bi.Cversion.Content,
+		bi.Ctarget_release.Content, bi.Ctarget_milestone.Content)
 	fmt.Printf("  Keywords: %s\n", bi.Ckeywords.Content)
 	if bi.Cassigned_to != nil {
 		fmt.Printf("  Assigned to: %s\n", bi.Cassigned_to.Content)
@@ -49,4 +51,5 @@ func (bi *Cbug) ShortSummary(useColor bool)  {
 
 		fmt.Printf("  * %s : %s\n", x.Attrname, x.URL())
 	}
+	fmt.Println("")
 }

@@ -60,6 +60,9 @@ func RetrieveCache(bzID int, currentDateTime string, isXml bool) (xmlContent *[]
 
 func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 	var err error
+	if xmlContent == nil {
+		return
+	}
 
 	db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(itob(bzID, isXml))

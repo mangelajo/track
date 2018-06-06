@@ -21,6 +21,7 @@ import (
 	"sync"
 	"github.com/spf13/viper"
 	"strings"
+	"github.com/mangelajo/track/pkg/shell"
 )
 
 // bzListCmd represents the bzList command
@@ -72,7 +73,7 @@ func getWhiteBoardQuery() string {
 
 func bzList(cmd *cobra.Command, args []string) {
 
-	client := getClient()
+	client := GetBzClient()
 
 	statusSelectors := strings.Split(statusStr, ",")
 
@@ -87,7 +88,7 @@ func bzList(cmd *cobra.Command, args []string) {
 	}
 
 	if myBugs {
-		query.AssignedTo = bzEmail
+		query.AssignedTo = BzEmail
 	}
 
 	buglist, _:= client.BugList(&query)
@@ -98,10 +99,13 @@ func bzList(cmd *cobra.Command, args []string) {
 
 	bzChan := grabBugzillasConcurrently(client, buglist)
 
+	var bugs []bugzilla.Cbug
+
 	for bi := range bzChan {
 		if !changedBugs || (changedBugs && !bi.Cached) {
 			bi.Bug.ShortSummary(bugzilla.USE_COLOR)
 		}
+		bugs = append(bugs, bi.Bug)
 	}
 
 	if preCacheHTML {
@@ -109,6 +113,12 @@ func bzList(cmd *cobra.Command, args []string) {
 		grabBugzillasHTMLConcurrently(client, buglist)
 
 	}
+
+	if dropInteractiveShell {
+		shell.Shell(&bugs, GetBzClient)
+	}
+
+
 
 }
 
@@ -182,6 +192,3 @@ func grabBugzillasHTMLConcurrently(client *bugzilla.Client, buglist []bugzilla.B
 	close(bugs)
 	wg.Wait()
 }
-
-
-

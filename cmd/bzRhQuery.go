@@ -84,7 +84,7 @@ func bzRhQuery(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	client := getClient()
+	client := GetBzClient()
 
 	buglist, _ := client.BugList(&bugzilla.BugListQuery{CustomQuery: urlQuery})
 

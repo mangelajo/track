@@ -25,11 +25,12 @@ import (
 )
 
 var cfgFile string
-var bzEmail string
-var bzPassword string
-var bzURL string
+var BzEmail string
+var BzPassword string
+var BzURL string
 var workers int
 var preCacheHTML bool
+var dropInteractiveShell bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -67,7 +68,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "o", "xdg-open", "Command to open an html file")
 	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
 	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
-
+	rootCmd.PersistentFlags().BoolVar(&dropInteractiveShell, "shell", false, "Start an interactive shell once the command is done")
 }
 
 func exampleTrackYaml() {
@@ -117,22 +118,22 @@ func initConfig() {
 	}
 
 
-	bzURL = viper.GetString("bzurl")
-	bzPassword = viper.GetString("bzpass")
-	bzEmail = viper.GetString("bzemail")
+	BzURL = viper.GetString("bzurl")
+	BzPassword = viper.GetString("bzpass")
+	BzEmail = viper.GetString("bzemail")
 
-	if bzURL == "" {
+	if BzURL == "" {
 		fmt.Println("No bz url provided either in parameters or ~/.track.yaml file")
 		exampleTrackYaml()
 		os.Exit(1)
 	}
 
-	if bzEmail == "" {
+	if BzEmail == "" {
 		fmt.Println("No email address provided either in parameters or ~/.track.yaml file")
 		exampleTrackYaml()
 		os.Exit(1)
 	}
-	if bzPassword == "" {
+	if BzPassword == "" {
 		fmt.Println("No bz password provided either in parameters or ~/.track.yaml file")
 		exampleTrackYaml()
 		os.Exit(1)
@@ -140,8 +141,8 @@ func initConfig() {
 
 }
 
-func getClient() *bugzilla.Client {
-	client, err := bugzilla.NewClient(bzURL, bzEmail, bzPassword)
+func GetBzClient() *bugzilla.Client {
+	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword)
 	if err != nil || client == nil {
 		fmt.Printf("Problem during login to bugzilla: %s\n", err)
 		os.Exit(1)
