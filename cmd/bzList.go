@@ -36,6 +36,7 @@ based on configuration and query.`,
 var myBugs bool
 var changedBugs bool
 var componentStr string
+var productStr string
 var assignedTo string
 var statusStr string
 
@@ -47,6 +48,7 @@ func init() {
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
 	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
+	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
 	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
@@ -83,7 +85,7 @@ func bzList(cmd *cobra.Command, args []string) {
 		Limit:          50,
 		Offset:         0,
 		Classification: CLS_REDHAT,
-		Product:        RH_OPENSTACK_PRODUCT,
+		Product:        productStr,
 		Component: 		componentStr,
 		BugStatus:      statusSelectors,
 		WhiteBoard:     getWhiteBoardQuery(),
@@ -96,14 +98,15 @@ func bzList(cmd *cobra.Command, args []string) {
 
 	buglist, _:= client.BugList(&query)
 
+	listBugs(buglist, client)
+}
+
+func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 	for _, bz := range buglist {
 		fmt.Printf("%s\n", bz.String())
 	}
-
 	bzChan := grabBugzillasConcurrently(client, buglist)
-
 	var bugs []bugzilla.Cbug
-
 	fmt.Print("Grabbing bug details:")
 	for bi := range bzChan {
 		if !changedBugs || (changedBugs && !bi.Cached) {
@@ -115,15 +118,14 @@ func bzList(cmd *cobra.Command, args []string) {
 			bugs = append(bugs, bi.Bug)
 		}
 	}
-	fmt.Println(" done.")
-
+	if dropInteractiveShell {
+		fmt.Println(" done.")
+	}
 	if preCacheHTML {
 		fmt.Print("Pre caching HTML:")
 		grabBugzillasHTMLConcurrently(client, buglist)
+		fmt.Println(" done.")
 	}
-
-	fmt.Println(" done.")
-
 	fmt.Println("")
 	if dropInteractiveShell {
 		shell.Shell(&bugs, GetBzClient)

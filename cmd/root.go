@@ -64,7 +64,7 @@ func init() {
 	// when this action is called directly.
 	rootCmd.PersistentFlags().StringP("bzurl", "b", "https://bugzilla.redhat.com", "Bugzilla URL")
 	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
-	rootCmd.PersistentFlags().StringP("bzpass", "p", "", "Bugzilla login password")
+	rootCmd.PersistentFlags().StringP("bzpass", "k", "", "Bugzilla login password")
 	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "o", "xdg-open", "Command to open an html file")
 	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
 	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
