@@ -135,7 +135,7 @@ BZ 1578502 (     NEW) [RFE] Networker Node replacement documentation
 Commands:
   clear      clear the screen
   exit       exit the program
-  go         previous bugzilla
+  go         open bugzilla from server url
   help       display help
   links      open links from bugzilla
   next       next bugzilla

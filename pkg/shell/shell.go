@@ -130,7 +130,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 				show.OpenURL(bug.URL())
 			}
 		},
-		Help: "previous bugzilla",
+		Help: "open bugzilla from server url",
 		Completer: func([]string) []string { return bzNames },
 	})
 
