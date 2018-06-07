@@ -36,6 +36,7 @@ based on configuration and query.`,
 var myBugs bool
 var changedBugs bool
 var componentStr string
+var assignedTo string
 var statusStr string
 
 
@@ -46,6 +47,7 @@ func init() {
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
 	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
+	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
 
@@ -85,6 +87,7 @@ func bzList(cmd *cobra.Command, args []string) {
 		Component: 		componentStr,
 		BugStatus:      statusSelectors,
 		WhiteBoard:     getWhiteBoardQuery(),
+		AssignedTo:		assignedTo,
 	}
 
 	if myBugs {
