@@ -2,16 +2,22 @@
 
 
 [[projects]]
+  name = "github.com/abiosoft/ishell"
+  packages = ["."]
+  revision = "0a6b1640e32638dd433ee7e57ec325a7bdd79561"
+  version = "v2.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/abiosoft/readline"
+  packages = ["."]
+  revision = "155bce2042db95a783081fab225e74dd879055b0"
+
+[[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
   revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
   version = "v1.3.1"
-
-[[projects]]
-  name = "github.com/chzyer/readline"
-  packages = ["."]
-  revision = "62c6fe6193755f722b8b8788aa7357be55a50ff1"
-  version = "v1.4"
 
 [[projects]]
   name = "github.com/fatih/color"
@@ -59,12 +65,6 @@
   packages = ["."]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/mangelajo/ishell"
-  packages = ["."]
-  revision = "723233e9d558b19de3eaa19e8781cdc380181703"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -163,6 +163,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "307f6b9192e359fc00a0153b2a63404fff4224396f1dfc4b1f7b043b2c5aa916"
+  inputs-digest = "390623ca1942f46026520e5313003ae117b777010ca899c2818efda642b565c3"
   solver-name = "gps-cdcl"
   solver-version = 1

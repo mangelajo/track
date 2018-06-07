@@ -104,22 +104,18 @@ func bzList(cmd *cobra.Command, args []string) {
 	for bi := range bzChan {
 		if !changedBugs || (changedBugs && !bi.Cached) {
 			bi.Bug.ShortSummary(bugzilla.USE_COLOR)
+			bugs = append(bugs, bi.Bug)
 		}
-		bugs = append(bugs, bi.Bug)
 	}
 
 	if preCacheHTML {
 		fmt.Println("Pre caching HTML")
 		grabBugzillasHTMLConcurrently(client, buglist)
-
 	}
 
 	if dropInteractiveShell {
 		shell.Shell(&bugs, GetBzClient)
 	}
-
-
-
 }
 
 type BugzillaResponse struct {

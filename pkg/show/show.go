@@ -31,11 +31,17 @@ func OpenBz(bzId int, getClient func() *bugzilla.Client) int {
 	}
 }
 
+
+
 func openHTML(bzid int, html *[]byte) {
 	filename := fmt.Sprintf("/tmp/bz%d.html", bzid)
 	fmt.Printf("Wrote %s\n", filename)
 	writeHTML(html, filename)
-	err := exec.Command(viper.Get("htmlOpenCommand").(string), filename).Run()
+	OpenURL(filename)
+}
+
+func OpenURL(url string) {
+	err := exec.Command(viper.Get("htmlOpenCommand").(string), url).Run()
 	if err != nil {
 		fmt.Printf("error: %s", err)
 		os.Exit(1)
