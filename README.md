@@ -15,7 +15,37 @@ export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOPATH/bin
 
 go get github.com/mangelajo/track
+
 ```
+```bash
+$ ./track
+Track helps you track tasks, bugs, RFEs linked across platforms
+like bugzilla, trello, launchpad, etc.
+
+Usage:
+  track [command]
+
+Available Commands:
+  bz-list     List bugzillas based on parameters and configuration
+  bz-rh-query Grab query parameters from https://url.corp.redhat.com/< name >
+  bz-show     Open cached HTML for bugzilla
+  help        Help about any command
+  version     Show program's version number and exit
+
+Flags:
+  -u, --bzemail string           Bugzilla login email
+  -p, --bzpass string            Bugzilla login password
+  -a, --bzurl string             Bugzilla URL (default "https://bugzilla.redhat.com")
+      --config string            config file (default is $HOME/.track.yaml)
+  -h, --help                     help for track
+  -x, --html                     Pre-cache html for bz-cache command
+  -o, --htmlOpenCommand string   Command to open an html file (default "xdg-open")
+      --shell                    Start an interactive shell once the command is done
+  -w, --workers int              Workers for bz retrieval (default 4)
+
+Use "track [command] --help" for more information about a command.
+```
+
 
 ## usage examples
 
@@ -87,3 +117,29 @@ $ track bz-rh-query network-dfg-untriaged -x
 
 ```
 
+## The interactive shell
+
+Just append --shell to bz-list or bz-rh-query , and there it is.
+```bash
+$ track bz-list -x --shell
+Track interactive shell
+BZ 1578502 (     NEW) [RFE] Networker Node replacement documentation
+  Product: Red Hat OpenStack ver: 10.0 (Newton) target: 10.0 (Newton) (---)
+  Keywords:
+  Assigned to: rhos-docs@redhat.com
+  * bugzilla: http://bugzilla.redhat.com/1578502
+  * Red Hat Customer Portal : https://access.redhat.com/support/cases/02101007
+
+>>> help
+
+Commands:
+  clear      clear the screen
+  exit       exit the program
+  go         previous bugzilla
+  help       display help
+  links      open links from bugzilla
+  next       next bugzilla
+  open       open a bugzilla from cache
+  prev       previous bugzilla
+  show       show a bugzilla
+```
