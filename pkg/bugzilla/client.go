@@ -98,6 +98,7 @@ type BugListQuery struct {
 	BugStatus []string
 	WhiteBoard string
 	AssignedTo string
+	FlagRequestee string
 
 }
 

@@ -39,18 +39,20 @@ var componentStr string
 var productStr string
 var assignedTo string
 var statusStr string
+var flagOn string
 
 
 func init() {
 
 	rootCmd.AddCommand(bzListCmd)
+	bzListCmd.Flags().StringVarP(&flagOn, "flags-on", "f", "", "List bugs with flags on somebody (you can use 'me')")
 	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
-	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED", "Status list separated by commas")
+	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED,POST,MODIFIED,ON_DEV,ON_QA,VERIFIED,RELEASE_PENDING", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
-	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee")
-	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only my bugs")
+	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee (you can use 'me'")
+	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only bugs assigned to me")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
 
 }
@@ -77,8 +79,6 @@ func getWhiteBoardQuery() string {
 
 func bzList(cmd *cobra.Command, args []string) {
 
-	client := GetBzClient()
-
 	statusSelectors := strings.Split(statusStr, ",")
 
 	query := bugzilla.BugListQuery{
@@ -90,11 +90,19 @@ func bzList(cmd *cobra.Command, args []string) {
 		BugStatus:      statusSelectors,
 		WhiteBoard:     getWhiteBoardQuery(),
 		AssignedTo:		assignedTo,
+		FlagRequestee:  flagOn,
 	}
 
-	if myBugs {
+
+	if myBugs || query.AssignedTo == "me" {
 		query.AssignedTo = BzEmail
 	}
+
+	if query.FlagRequestee == "me" {
+		query.FlagRequestee = BzEmail
+	}
+
+	client := GetBzClient()
 
 	buglist, _:= client.BugList(&query)
 

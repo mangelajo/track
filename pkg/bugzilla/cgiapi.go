@@ -132,6 +132,8 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	u.Path = "buglist.cgi"
 
+	var advMatches int = 1
+
 	if query.CustomQuery != "" {
 		u.RawQuery = query.CustomQuery + "&ctype=csv&human=1"
 		url := u.String()
@@ -179,6 +181,13 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	if query.AssignedTo != "" {
 		q.Set("assigned_to", query.AssignedTo)
+	}
+
+	if query.FlagRequestee != "" {
+		q.Set(fmt.Sprintf("f%d", advMatches), "requestees.login_name")
+		q.Set(fmt.Sprintf("o%d", advMatches), "substring")
+		q.Set(fmt.Sprintf("v%d", advMatches), query.FlagRequestee)
+		advMatches++
 	}
 
 	u.RawQuery = q.Encode()
