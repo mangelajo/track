@@ -5,16 +5,26 @@ import (
 	"fmt"
 	"errors"
 	"encoding/binary"
+	"time"
+	"os"
 )
 
 var db *bolt.DB = nil
 
 func Open(path string) {
 	var err error
-	db, err = bolt.Open(path, 0600, nil)
+	db, err = bolt.Open(path, 0600,  &bolt.Options{Timeout: 5 * time.Second})
 
 	if err != nil {
-		panic(fmt.Errorf("Error opening bolt db: %s", path))
+		fmt.Printf("Error opening bolt db: %s\n", path)
+		fmt.Printf("Reason: %s", err)
+		if  err.Error() == "timeout" {
+			fmt.Println("\n")
+			fmt.Println("Possibly another instance of track has the database locked")
+			fmt.Println("please close any other instance, or delete the database")
+			fmt.Println("\n")
+		}
+		os.Exit(2)
 	}
 }
 
