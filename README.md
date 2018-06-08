@@ -16,7 +16,17 @@ export PATH=$PATH:$GOPATH/bin
 
 go get github.com/mangelajo/track
 
+## upgrading
+
+```bash
+export GOPATH=${GOPATH:-$HOME/go}
+export PATH=$PATH:$GOPATH/bin
+
+go get -u github.com/mangelajo/track
 ```
+
+## basic help
+
 ```bash
 $ track
 Track helps you track tasks, bugs, RFEs linked across platforms
