@@ -38,6 +38,7 @@ Track helps you track tasks, bugs, RFEs linked across platforms
  Available Commands:
    bz-list     List bugzillas based on parameters and configuration
    bz-rh-query Grab query parameters from https://url.corp.redhat.com/< name >
+   bz-query    Grab query parameters from your config
    bz-show     Open cached HTML for bugzilla
    help        Help about any command
    version     Show program's version number and exit
@@ -71,6 +72,12 @@ bzemail: xxxxx@xxxx
 bzpass: xxxxxxxx
 dfg: Networking
 htmlOpenCommand: xdg-open
+queries:
+    ovn-new: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&classification=Red%20Hat&component=python-networking-ovn&list_id=8959835&product=Red%20Hat%20OpenStack&query_format=advanced
+    ovn-rfe: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=POST&bug_status=MODIFIED&bug_status=ON_DEV&bug_status=ON_QA&bug_status=VERIFIED&bug_status=RELEASE_PENDING&classification=Red%20Hat&component=python-networking-ovn&keywords=RFE%2C%20&keywords_type=nowords&list_id=8959839&product=Red%20Hat%20OpenStack&query_format=advanced
+    ovn-new-rfes: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&classification=Red%20Hat&component=python-networking-ovn&keywords=RFE%2C%20&keywords_type=nowords&list_id=8959840&product=Red%20Hat%20OpenStack&query_format=advanced
+
+# notes: for OSX use htmlOpenCommand: open
 
 ```
 
