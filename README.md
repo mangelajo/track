@@ -74,8 +74,7 @@ dfg: Networking
 htmlOpenCommand: xdg-open
 queries:
     ovn-new: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&classification=Red%20Hat&component=python-networking-ovn&list_id=8959835&product=Red%20Hat%20OpenStack&query_format=advanced
-    ovn-rfe: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=POST&bug_status=MODIFIED&bug_status=ON_DEV&bug_status=ON_QA&bug_status=VERIFIED&bug_status=RELEASE_PENDING&classification=Red%20Hat&component=python-networking-ovn&keywords=RFE%2C%20&keywords_type=nowords&list_id=8959839&product=Red%20Hat%20OpenStack&query_format=advanced
-    ovn-new-rfes: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&classification=Red%20Hat&component=python-networking-ovn&keywords=RFE%2C%20&keywords_type=nowords&list_id=8959840&product=Red%20Hat%20OpenStack&query_format=advanced
+    ovn-rfes: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=MODIFIED&bug_status=ON_DEV&bug_status=POST&bug_status=ON_QA&classification=Red%20Hat&component=python-networking-ovn&f1=keywords&f2=short_desc&j_top=OR&list_id=8959855&o1=substring&o2=substring&product=Red%20Hat%20OpenStack&query_format=advanced&v1=RFE&v2=RFE
 
 # notes: for OSX use htmlOpenCommand: open
 
