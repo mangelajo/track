@@ -40,6 +40,7 @@ var productStr string
 var assignedTo string
 var statusStr string
 var flagOn string
+var classStr string
 
 
 func init() {
@@ -48,6 +49,7 @@ func init() {
 	bzListCmd.Flags().StringVarP(&flagOn, "flags-on", "f", "", "List bugs with flags on somebody (you can use 'me')")
 	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
+	bzListCmd.Flags().StringVarP(&classStr, "class", "", "Red Hat", "Class on bugzilla")
 	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED,POST,MODIFIED,ON_DEV,ON_QA,VERIFIED,RELEASE_PENDING", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
@@ -82,9 +84,9 @@ func bzList(cmd *cobra.Command, args []string) {
 	statusSelectors := strings.Split(statusStr, ",")
 
 	query := bugzilla.BugListQuery{
-		Limit:          50,
-		Offset:         0,
-		Classification: CLS_REDHAT,
+		Limit:          listLimit,
+		Offset:         listOffset,
+		Classification: classStr,
 		Product:        productStr,
 		Component: 		componentStr,
 		BugStatus:      statusSelectors,

@@ -32,6 +32,8 @@ var BzURL string
 var workers int
 var preCacheHTML bool
 var dropInteractiveShell bool
+var listOffset int
+var listLimit int
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -66,7 +68,9 @@ func init() {
 	rootCmd.PersistentFlags().StringP("bzurl", "b", "https://bugzilla.redhat.com", "Bugzilla URL")
 	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
 	rootCmd.PersistentFlags().StringP("bzpass", "k", "", "Bugzilla login password")
-	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "o", "xdg-open", "Command to open an html file")
+	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "", "xdg-open", "Command to open an html file")
+	rootCmd.PersistentFlags().IntVarP(&listOffset, "offset", "o", 0, "Offset on the bug listing")
+	rootCmd.PersistentFlags().IntVarP(&listLimit, "limit", "l", 50, "Max entries to list")
 	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
 	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
 	rootCmd.PersistentFlags().BoolVar(&dropInteractiveShell, "shell", false, "Start an interactive shell once the command is done")
