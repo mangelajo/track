@@ -113,6 +113,7 @@ func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 	for _, bz := range buglist {
 		fmt.Printf("%s\n", bz.String())
 	}
+
 	bzChan := grabBugzillasConcurrently(client, buglist)
 	var bugs []bugzilla.Cbug
 	fmt.Print("Grabbing bug details:")
@@ -135,6 +136,10 @@ func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 		fmt.Println(" done.")
 	}
 	fmt.Println("")
+
+	fmt.Printf("%d bugs found.\n", len(buglist))
+	fmt.Println("")
+
 	if dropInteractiveShell {
 		shell.Shell(&bugs, GetBzClient)
 	}
