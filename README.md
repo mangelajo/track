@@ -15,6 +15,7 @@ export GOPATH=${GOPATH:-$HOME/go}
 export PATH=$PATH:$GOPATH/bin
 
 go get github.com/mangelajo/track
+```
 
 ## upgrading
 
@@ -69,7 +70,7 @@ An example ~/.track.yaml:
 
 bzurl: https://bugzilla.redhat.com
 bzemail: xxxxx@xxxx
-bzpass: xxxxxxxx
+bzpass: xxxxxxxx # you can omit this field and track will ask you when needed
 dfg: Networking
 htmlOpenCommand: xdg-open
 queries:

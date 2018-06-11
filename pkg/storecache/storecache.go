@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"time"
 	"os"
+	"net/http"
 )
 
 var db *bolt.DB = nil
@@ -89,3 +90,57 @@ func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 	})
 }
 
+
+func StoreAuth(cookies []*http.Cookie, authToken string) {
+	bucketName := []byte("credentials")
+
+	db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			var err error
+			b, err = tx.CreateBucket(bucketName)
+			if err != nil {
+				return err
+			}
+		}
+		b.Put([]byte("token"), []byte(authToken))
+
+		for _, cookie := range(cookies) {
+			b.Put([]byte(cookie.Name), []byte(cookie.Value))
+		}
+		return nil
+	})
+}
+
+func GetAuth() (cookies []*http.Cookie , authToken *string) {
+	bucketName := []byte("credentials")
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			errRes := errors.New("Not found")
+			return errRes;
+		}
+
+		for _, n := range([]string {"Bugzilla_login", "Bugzilla_logincookie"}) {
+			v := b.Get([]byte(n))
+			if v != nil {
+				cookies=append(cookies, &http.Cookie{
+					Name: n,
+					Value: string(v),
+					MaxAge: -1,
+				})
+
+			}
+		}
+		v := b.Get([]byte("token"))
+
+		if v != nil {
+			tokenStr := string(v)
+			authToken = &tokenStr
+		}
+
+		return nil
+	})
+
+	return cookies, authToken
+}

@@ -7,6 +7,10 @@ import (
 	"net/http/cookiejar"
 	"reflect"
 	"time"
+
+	"github.com/howeyc/gopass"
+	"bufio"
+	"os"
 )
 
 const httpTimeout int = 60
@@ -52,8 +56,15 @@ type Client struct {
 	json             *bugzillaJSONRPCClient
 }
 
+
+type GetAuthFunc func() ([]*http.Cookie, *string)
+type StoreAuthFunc func(cookies []*http.Cookie, authToken string)
+
 // NewClient creates bugzilla Client instance
-func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword string) (client *Client, err error) {
+func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword string,
+	           getAuth GetAuthFunc,
+	           	storeAuth StoreAuthFunc) (client *Client, err error) {
+
 	httpClient, err := newHTTPClient()
 	if err != nil {
 		return nil, err
@@ -66,20 +77,58 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 	if err != nil {
 		return nil, err
 	}
-	err = cgiClient.login(bugzillaLogin, bugzillaPassword)
-	if err != nil {
-		return nil, err
+
+	var authToken *string
+	var cookies []*http.Cookie
+
+	if getAuth != nil {
+		cookies, authToken = getAuth()
+		if cookies != nil && authToken != nil {
+			jsonClient.SetCookies(cookies)
+			cgiClient.SetCookies(cookies)
+		}
+
 	}
-	token, err := jsonClient.login(bugzillaLogin, bugzillaPassword)
-	if err != nil {
-		return nil, err
+
+	if authToken == nil || cookies == nil {
+
+		fmt.Println("Oh, we don't have an auth token or cookies...")
+
+		if bugzillaLogin == "" {
+			reader := bufio.NewReader(os.Stdin)
+
+			fmt.Print("Bugzilla Email: ")
+			bugzillaLogin, _ = reader.ReadString('\n')
+
+		}
+
+		if bugzillaPassword == "" {
+
+			fmt.Print("Bugzilla Password: ")
+			pass, _ := gopass.GetPasswdMasked()
+			bugzillaPassword = string(pass)
+		}
+		fmt.Print("Authenticating to bugzilla.... ")
+
+
+		token, err := jsonClient.login(bugzillaLogin, bugzillaPassword)
+		authToken = &token
+		if err != nil {
+			return nil, err
+		}
+		cookies = jsonClient.GetCookies()
+		cgiClient.SetCookies(cookies)
+		if storeAuth != nil {
+			storeAuth(cookies, *authToken)
+		}
+		fmt.Println("done")
 	}
 
 	client = &Client{
 		bugzillaAddress:  bugzillaAddress,
 		bugzillaLogin:    bugzillaLogin,
 		bugzillaPassword: bugzillaPassword,
-		bugzillaToken:    token,
+		bugzillaToken:    *authToken,
 		cgi:              cgiClient,
 		json:             jsonClient,
 	}

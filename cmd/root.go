@@ -22,6 +22,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/mangelajo/track/pkg/bugzilla"
+	"github.com/mangelajo/track/pkg/storecache"
 )
 
 var cfgFile string
@@ -132,22 +133,11 @@ func initConfig() {
 		exampleTrackYaml()
 		os.Exit(1)
 	}
-
-	if BzEmail == "" {
-		fmt.Println("No email address provided either in parameters or ~/.track.yaml file")
-		exampleTrackYaml()
-		os.Exit(1)
-	}
-	if BzPassword == "" {
-		fmt.Println("No bz password provided either in parameters or ~/.track.yaml file")
-		exampleTrackYaml()
-		os.Exit(1)
-	}
-
 }
 
 func GetBzClient() *bugzilla.Client {
-	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword)
+	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword, storecache.GetAuth,
+									  storecache.StoreAuth)
 	if err != nil || client == nil {
 		fmt.Printf("Problem during login to bugzilla: %s\n", err)
 		os.Exit(1)

@@ -72,6 +72,18 @@ func (client *bugzillaJSONRPCClient) login(login string, password string) (token
 	return token, err
 }
 
+func (client *bugzillaJSONRPCClient) GetCookies() []*http.Cookie {
+	url, _ := url.Parse(client.bugzillaAddr)
+	cookies := client.httpClient.Jar.Cookies(url)
+	return cookies
+}
+
+func (client *bugzillaJSONRPCClient) SetCookies(cookies []*http.Cookie) {
+	url, _ := url.Parse(client.bugzillaAddr)
+	client.httpClient.Jar.SetCookies(url, cookies)
+}
+
+
 // bugzillaVersion returns Bugzilla version
 func (client *bugzillaJSONRPCClient) bugzillaVersion() (version string, err error) {
 	var result map[string]interface{}

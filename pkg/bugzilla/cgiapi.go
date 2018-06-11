@@ -125,7 +125,19 @@ func (client *bugzillaCGIClient) login(login string, password string) (err error
 		}
 		return err
 	}
+
 	return nil
+}
+
+func (client *bugzillaCGIClient) GetCookies() []*http.Cookie {
+	url, _ := url.Parse(client.bugzillaAddr)
+	cookies := client.httpClient.Jar.Cookies(url)
+	return cookies
+}
+
+func (client *bugzillaCGIClient) SetCookies(cookies []*http.Cookie) {
+	url, _ := url.Parse(client.bugzillaAddr)
+	client.httpClient.Jar.SetCookies(url, cookies)
 }
 
 func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
