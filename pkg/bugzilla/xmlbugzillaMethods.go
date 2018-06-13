@@ -18,6 +18,7 @@ func (extbug *Cexternal_bugs) URL() string {
 	switch extbug.Attrname {
 	case "Red Hat Customer Portal": 			sfmt = "https://access.redhat.com/support/cases/%s"
 	case "Red Hat Knowledge Base (Solution)":	sfmt = "https://access.redhat.com/site/solutions/%s"
+	case "Red Hat Engineering Gerrit":			sfmt = "https://code.engineering.redhat.com/gerrit/#/c/%s"
 	case "OpenStack gerrit": 					sfmt = "https://review.openstack.org/#/c/%s/"
 	case "OpenStack Storyboard":				sfmt = "https://storyboard.openstack.org/#!/story/%s"
 	case "Launchpad":							sfmt = "https://bugs.launchpad.net/bugs/%s"
