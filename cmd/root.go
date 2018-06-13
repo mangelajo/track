@@ -34,6 +34,7 @@ var preCacheHTML bool
 var dropInteractiveShell bool
 var listOffset int
 var listLimit int
+var ignoreSSLCerts bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -74,6 +75,7 @@ func init() {
 	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
 	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
 	rootCmd.PersistentFlags().BoolVar(&dropInteractiveShell, "shell", false, "Start an interactive shell once the command is done")
+	rootCmd.PersistentFlags().BoolVarP(&ignoreSSLCerts, "ignorecerts", "i", false, "Ignore SSL certificates")
 }
 
 func exampleTrackYaml() {

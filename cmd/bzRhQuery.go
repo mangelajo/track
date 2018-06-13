@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 	"os"
+	"crypto/tls"
 )
 
 
@@ -40,7 +41,12 @@ func init() {
 func findRHQuery(name string) string {
 	url := "https://url.corp.redhat.com/" + name
 
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify : ignoreSSLCerts},
+	}
+
 	client := &http.Client{
+		Transport:tr,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
 	} }
