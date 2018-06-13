@@ -127,7 +127,6 @@ func GetAuth() (cookies []*http.Cookie , authToken *string) {
 				cookies=append(cookies, &http.Cookie{
 					Name: n,
 					Value: string(v),
-					MaxAge: -1,
 				})
 
 			}
