@@ -5,6 +5,12 @@ import (
 	"github.com/fatih/color"
 )
 
+func (bz *Cbugzilla) Authenticated() bool {
+	// when a bug was grabbed as an authenticated user the login will be in the
+	// exporter attribute
+	return bz.Attrexporter != ""
+}
+
 func (extbug *Cexternal_bugs) URL() string {
 
 	var sfmt string
