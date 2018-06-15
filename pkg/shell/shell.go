@@ -15,6 +15,11 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 
 	bzNames := []string {}
 
+	if len(*bugs) == 0 {
+		fmt.Println("\nNo bugs for the shell, bye! :)\n")
+		return
+	}
+
 	// map the bugs to shellBugs
 	for _, bug := range *bugs {
 		shellBugs[bug.Cbug_id.Number] = &bug

@@ -139,7 +139,12 @@ func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 	}
 	fmt.Println("")
 
-	fmt.Printf("%d bugs found.\n", len(buglist))
+	if changedBugs {
+		fmt.Printf("%d bugs found, and %d changed.", len(buglist), len(bugs))
+	} else {
+		fmt.Printf("%d bugs found.\n", len(buglist))
+	}
+
 	fmt.Println("")
 
 	if dropInteractiveShell {
