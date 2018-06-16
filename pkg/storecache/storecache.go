@@ -12,6 +12,8 @@ import (
 
 var db *bolt.DB = nil
 
+const credentialsBucket = "credentials"
+
 func Open(path string) {
 	var err error
 	db, err = bolt.Open(path, 0600,  &bolt.Options{Timeout: 5 * time.Second})
@@ -91,7 +93,7 @@ func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 }
 
 
-func StoreAuth(cookies []*http.Cookie, authToken string) {
+func StoreBzAuth(cookies []*http.Cookie, authToken string) {
 	bucketName := []byte("credentials")
 
 	db.Update(func(tx *bolt.Tx) error {
@@ -112,7 +114,7 @@ func StoreAuth(cookies []*http.Cookie, authToken string) {
 	})
 }
 
-func GetAuth() (cookies []*http.Cookie , authToken *string) {
+func GetBzAuth() (cookies []*http.Cookie , authToken *string) {
 	bucketName := []byte("credentials")
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
@@ -142,4 +144,50 @@ func GetAuth() (cookies []*http.Cookie , authToken *string) {
 	})
 
 	return cookies, authToken
+}
+
+func storeString(bucket string, key string, value string) {
+	bucketName := []byte(bucket)
+
+	db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			var err error
+			b, err = tx.CreateBucket(bucketName)
+			if err != nil {
+				return err
+			}
+		}
+		b.Put([]byte(key), []byte(value))
+
+		return nil
+	})
+}
+
+func getString(bucket string, key string) (value *string) {
+	bucketName := []byte(bucket)
+	db.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket(bucketName)
+		if b == nil {
+			errRes := errors.New("Not found")
+			return errRes;
+		}
+
+		v := b.Get([]byte(key))
+		if v != nil {
+			tokenStr := string(v)
+			value = &tokenStr
+		}
+		return nil
+	})
+
+	return value
+}
+
+func StoreTrelloToken(authToken string) {
+	storeString(credentialsBucket, "trelloToken", authToken)
+}
+
+func GetTrelloToken() (authToken *string){
+	return getString(credentialsBucket, "trelloToken")
 }

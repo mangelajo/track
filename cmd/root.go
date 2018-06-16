@@ -23,6 +23,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/mangelajo/track/pkg/bugzilla"
 	"github.com/mangelajo/track/pkg/storecache"
+	"github.com/adlio/trello"
 )
 
 var cfgFile string
@@ -35,6 +36,8 @@ var dropInteractiveShell bool
 var listOffset int
 var listLimit int
 var ignoreSSLCerts bool
+
+const trelloAppKey string = "95b7346a1c21c8dbe392f3b2d267fed3"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -134,7 +137,7 @@ func initConfig() {
 	BzPassword = viper.GetString("bzpass")
 	BzEmail = viper.GetString("bzemail")
 
-	if BzURL == "" {
+	if BzEmail == "" {
 		fmt.Println("No bz url provided either in parameters or ~/.track.yaml file")
 		exampleTrackYaml()
 		os.Exit(1)
@@ -142,11 +145,28 @@ func initConfig() {
 }
 
 func GetBzClient() *bugzilla.Client {
-	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword, storecache.GetAuth,
-									  storecache.StoreAuth)
+	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword, storecache.GetBzAuth,
+									  storecache.StoreBzAuth)
 	if err != nil || client == nil {
 		fmt.Printf("Problem during login to bugzilla: %s\n", err)
 		os.Exit(1)
 	}
 	return client
+}
+
+func GetTrelloAuthURL() string {
+	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&" +
+		"response_type=token&name=Track&key=%s", trelloAppKey)
+}
+
+func GetTrelloClient() *trello.Client {
+	token := storecache.GetTrelloToken()
+	if token == nil || *token == "" {
+		fmt.Println("You need a token from trello, please visit: ")
+		fmt.Println(GetTrelloAuthURL())
+		fmt.Println("")
+		fmt.Println("Then run: track trello auth <<TOKEN>>")
+		os.Exit(1)
+	}
+	return nil
 }
