@@ -21,18 +21,10 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/mangelajo/track/pkg/bugzilla"
-	"github.com/mangelajo/track/pkg/storecache"
-	"github.com/adlio/trello"
 )
 
 var cfgFile string
-var BzEmail string
-var BzPassword string
-var BzURL string
-var workers int
-var preCacheHTML bool
-var dropInteractiveShell bool
+
 var listOffset int
 var listLimit int
 var ignoreSSLCerts bool
@@ -69,15 +61,10 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.PersistentFlags().StringP("bzurl", "b", "https://bugzilla.redhat.com", "Bugzilla URL")
-	rootCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
-	rootCmd.PersistentFlags().StringP("bzpass", "k", "", "Bugzilla login password")
 	rootCmd.PersistentFlags().StringP("htmlOpenCommand", "", "xdg-open", "Command to open an html file")
 	rootCmd.PersistentFlags().IntVarP(&listOffset, "offset", "o", 0, "Offset on the bug listing")
 	rootCmd.PersistentFlags().IntVarP(&listLimit, "limit", "l", 50, "Max entries to list")
-	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for bz retrieval")
-	rootCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz-cache command")
-	rootCmd.PersistentFlags().BoolVar(&dropInteractiveShell, "shell", false, "Start an interactive shell once the command is done")
+	rootCmd.PersistentFlags().IntVarP(&workers, "workers", "w", 4, "Workers for http retrieval")
 	rootCmd.PersistentFlags().BoolVarP(&ignoreSSLCerts, "ignorecerts", "i", false, "Ignore SSL certificates")
 }
 
@@ -101,6 +88,7 @@ queries:
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+
 	if cfgFile != "" {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
@@ -124,49 +112,9 @@ func initConfig() {
 		fmt.Printf("Could not read config file: %s \n", err)
 	}
 
-	for _, k := range []string {"bzurl", "bzemail", "bzpass", "htmlOpenCommand"} {
+	for _, k := range []string {"htmlOpenCommand"} {
 		viper.BindPFlag(k, rootCmd.PersistentFlags().Lookup(k))
 	}
 
-	for _, k := range []string {"dfg", "squad"} {
-		viper.BindPFlag(k, bzListCmd.Flags().Lookup(k))
-	}
-
-
-	BzURL = viper.GetString("bzurl")
-	BzPassword = viper.GetString("bzpass")
-	BzEmail = viper.GetString("bzemail")
-
-	if BzEmail == "" {
-		fmt.Println("No bz url provided either in parameters or ~/.track.yaml file")
-		exampleTrackYaml()
-		os.Exit(1)
-	}
-}
-
-func GetBzClient() *bugzilla.Client {
-	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword, storecache.GetBzAuth,
-									  storecache.StoreBzAuth)
-	if err != nil || client == nil {
-		fmt.Printf("Problem during login to bugzilla: %s\n", err)
-		os.Exit(1)
-	}
-	return client
-}
-
-func GetTrelloAuthURL() string {
-	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&" +
-		"response_type=token&name=Track&key=%s", trelloAppKey)
-}
-
-func GetTrelloClient() *trello.Client {
-	token := storecache.GetTrelloToken()
-	if token == nil || *token == "" {
-		fmt.Println("You need a token from trello, please visit: ")
-		fmt.Println(GetTrelloAuthURL())
-		fmt.Println("")
-		fmt.Println("Then run: track trello auth <<TOKEN>>")
-		os.Exit(1)
-	}
-	return nil
+	initBzConfig()
 }

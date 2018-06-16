@@ -1,11 +1,11 @@
 # track
 
-Track is a little tool to help you out deal with bugzilla (in the future 
-trello too) in a quick way from the command line.
+Track is a little tool to help you out deal with bugzilla and trello
+in a quick way from the command line.
 
 It features smart caching, and preloading of HTML to it's internal cache,
 so, once listed if you asked it to cache HTML (-x option) you will
-be able to quickly do *track bz-show ID* and you will have the bugzilla
+be able to quickly do *track bz show ID* and you will have the bugzilla
 in your browser.
 
 ## installing
@@ -29,40 +29,40 @@ go get -u github.com/mangelajo/track
 ## basic help
 
 ```bash
-$ track
-Track helps you track tasks, bugs, RFEs linked across platforms
- like bugzilla, trello, launchpad, etc.
- 
+$$ ./track bz
+ Bugzilla related commands
+
  Usage:
-   track [command]
- 
+   track bz [command]
+
  Available Commands:
-   bz-list     List bugzillas based on parameters and configuration
-   bz-rh-query Grab query parameters from https://url.corp.redhat.com/< name >
-   bz-query    Grab query parameters from your config
-   bz-show     Open cached HTML for bugzilla
-   help        Help about any command
-   version     Show program's version number and exit
- 
+   list        List bugzillas based on parameters and configuration
+   query       Grab query parameters from your config
+   rh-query    Grab query parameters from https://url.corp.redhat.com/< name >
+   show        Open cached HTML for bugzilla
+
  Flags:
-   -u, --bzemail string           Bugzilla login email
-   -p, --bzpass string            Bugzilla login password
-   -b, --bzurl string             Bugzilla URL (default "https://bugzilla.redhat.com")
+   -u, --bzemail string   Bugzilla login email
+   -k, --bzpass string    Bugzilla login password
+   -b, --bzurl string     Bugzilla URL (default "https://bugzilla.redhat.com")
+   -h, --help             help for bz
+   -x, --html             Pre-cache html for bz show command
+       --shell            Start an interactive shell once the command is done
+
+ Global Flags:
        --config string            config file (default is $HOME/.track.yaml)
-   -h, --help                     help for track
-   -x, --html                     Pre-cache html for bz-cache command
-   -o, --htmlOpenCommand string   Command to open an html file (default "xdg-open")
-       --shell                    Start an interactive shell once the command is done
-   -w, --workers int              Workers for bz retrieval (default 4)
- 
- Use "track [command] --help" for more information about a command.```
+       --htmlOpenCommand string   Command to open an html file (default "xdg-open")
+   -i, --ignorecerts              Ignore SSL certificates
+   -l, --limit int                Max entries to list (default 50)
+   -o, --offset int               Offset on the bug listing
+   -w, --workers int              Workers for http retrieval (default 4)
 ```
 
 ## usage examples
 
 If you don't have proper config, track will explain you how to create a config file
 ```bash
-$ track bz-list
+$ track bz list
 Could not read config file: Config File ".track" Not Found in "[/Users/ajo]"
 No email address provided either in parameters or ~/.track.yaml file
 
@@ -81,10 +81,10 @@ queries:
 
 ```
 
-If you want to list bugs on you, reardless of DFG:
+If you want to list bugs on you, regardless of DFG:
 
 ```bash
-$ track bz-list --me -d "" -x
+$ track bz list --me -d "" -x
 
 1399987 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1399987	   openstack-neutron	[RFE] allow to limit conntrack entries per tenant to avoid "nf_conntrack: table full, dropping packet"
 1546996 (     NEW)	majopela@redhat.com	https://bugzilla.redhat.com/1546996	python-networking-ovn	[RFE] [Neutron] [OVN] QoS support
@@ -120,13 +120,13 @@ Pre caching HTML
 
 This will let you open a bugzilla
 ```bash
-$ track bz-show 1546994
+$ track bz show 1546994
 Wrote /tmp/bz1546994.html
 ```
 
 You can also open predefined queries
 ```bash
-$ track bz-rh-query network-dfg-untriaged -x
+$ track bz rh-query network-dfg-untriaged -x
 ...
 ...
 ...
@@ -135,9 +135,9 @@ $ track bz-rh-query network-dfg-untriaged -x
 
 ## The interactive shell
 
-Just append --shell to bz-list or bz-rh-query , and there it is.
+Just append --shell to bz list or bz rh-query , and there it is.
 ```bash
-$ track bz-list -x --shell
+$ track bz list -x --shell
 Track interactive shell
 BZ 1578502 (     NEW) [RFE] Networker Node replacement documentation
   Product: Red Hat OpenStack ver: 10.0 (Newton) target: 10.0 (Newton) (---)

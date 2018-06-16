@@ -24,7 +24,7 @@ import (
 
 
 var bzShowCmd = &cobra.Command{
-	Use:   "bz-show",
+	Use:   "show",
 	Short: "Open cached HTML for bugzilla",
 	Long: `This command will open a cached HTML, or grab it from bugzilla and
 open it. It will use the command specified in the -openHtmlCommand parameter,
@@ -33,7 +33,7 @@ or in the ~/.track.yaml file`,
 }
 
 func init() {
-	rootCmd.AddCommand(bzShowCmd)
+	bzCmd.AddCommand(bzShowCmd)
 }
 
 func bzShow(cmd *cobra.Command, args []string) {

@@ -25,7 +25,7 @@ import (
 
 
 var bzQueryCmd = &cobra.Command{
-	Use:   "bz-query",
+	Use:   "query",
 	Short: "Grab query parameters from your config",
 	Long: `This command will grab the bugzilla query parameters from your
 configuration under the queries key, for example:
@@ -36,7 +36,7 @@ queries:
 }
 
 func init() {
-	rootCmd.AddCommand(bzQueryCmd)
+	bzCmd.AddCommand(bzQueryCmd)
 }
 
 func findQuery(name string) string {

@@ -26,7 +26,7 @@ import (
 
 
 var bzRhQueryCmd = &cobra.Command{
-	Use:   "bz-rh-query",
+	Use:   "rh-query",
 	Short: "Grab query parameters from https://url.corp.redhat.com/< name >",
 	Long: `This command will grab the bugzilla query parameters from the
 url redirector, and provide a list, it also allows caching of bugs for
@@ -35,7 +35,7 @@ bz-show <id> with the -x flag`,
 }
 
 func init() {
-	rootCmd.AddCommand(bzRhQueryCmd)
+	bzCmd.AddCommand(bzRhQueryCmd)
 }
 
 func findRHQuery(name string) string {

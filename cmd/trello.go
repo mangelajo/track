@@ -16,18 +16,36 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"fmt"
+	"github.com/adlio/trello"
+	"github.com/mangelajo/track/pkg/storecache"
+	"os"
 )
 
 // trelloCmd represents the trello command
 var trelloCmd = &cobra.Command{
 	Use:   "trello",
-	Short: "Trello commands",
+	Short: "Trello related commands",
 	Long: ``,
-	//Run: func(cmd *cobra.Command, args []string) {
-	//	fmt.Println("trello called")
-	//},
 }
 
 func init() {
 	rootCmd.AddCommand(trelloCmd)
+}
+
+func GetTrelloAuthURL() string {
+	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&" +
+		"response_type=token&name=Track&key=%s", trelloAppKey)
+}
+
+func GetTrelloClient() *trello.Client {
+	token := storecache.GetTrelloToken()
+	if token == nil || *token == "" {
+		fmt.Println("You need a token from trello, please visit: ")
+		fmt.Println(GetTrelloAuthURL())
+		fmt.Println("")
+		fmt.Println("Then run: track trello auth <<TOKEN>>")
+		os.Exit(1)
+	}
+	return nil
 }

@@ -26,7 +26,7 @@ import (
 
 // bzListCmd represents the bzList command
 var bzListCmd = &cobra.Command{
-	Use:   "bz-list",
+	Use:   "list",
 	Short: "List bugzillas based on parameters and configuration",
 	Long: `This command will list and retrieve details for bugzillas
 based on configuration and query.`,
@@ -45,7 +45,7 @@ var classStr string
 
 func init() {
 
-	rootCmd.AddCommand(bzListCmd)
+	bzCmd.AddCommand(bzListCmd)
 	bzListCmd.Flags().StringVarP(&flagOn, "flags-on", "f", "", "List bugs with flags on somebody (you can use 'me')")
 	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
