@@ -47,5 +47,5 @@ func GetTrelloClient() *trello.Client {
 		fmt.Println("Then run: track trello auth <<TOKEN>>")
 		os.Exit(1)
 	}
-	return nil
+	return trello.NewClient(trelloAppKey, *token)
 }
