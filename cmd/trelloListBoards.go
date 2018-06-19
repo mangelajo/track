@@ -49,6 +49,9 @@ func trelloListBoards(cmd *cobra.Command, args []string) {
 	fmt.Println("Boards:")
 
 	for _, b := range boards {
+		if b.Closed {
+			continue
+		}
 		fmt.Printf(" - %s\t%s\t%s\n", b.ID, b.ShortUrl, b.Name)
 	}
 }
