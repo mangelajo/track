@@ -18,7 +18,7 @@ import (
 	"github.com/spf13/cobra"
 	"fmt"
 	"os"
-	"github.com/adlio/trello"
+	"github.com/mangelajo/trello"
 	"github.com/mangelajo/track/pkg/storecache"
 )
 

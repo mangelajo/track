@@ -14,6 +14,12 @@
   revision = "155bce2042db95a783081fab225e74dd879055b0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/adlio/trello"
+  packages = ["."]
+  revision = "05dcd358e32866f2353c4f49077346a0eb585436"
+
+[[projects]]
   name = "github.com/boltdb/bolt"
   packages = ["."]
   revision = "2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8"
@@ -67,10 +73,22 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/jinzhu/copier"
+  packages = ["."]
+  revision = "7e38e58719c33e0d44d585c4ab477a30f8cb82dd"
+
+[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "c2353362d570a7bfa228149c62842019201cfb71"
   version = "v1.8.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/mangelajo/trello"
+  packages = ["."]
+  revision = "eee9e6a9b128e4aeefaa69babdb0f56363fe129e"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -101,6 +119,12 @@
   packages = ["."]
   revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
   version = "v1.2.0"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/spf13/afero"
@@ -178,6 +202,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9e427e15b433b113ef12ec4e5035968b88ac1c4e3b4efc011906f6dc9e81e9ee"
+  inputs-digest = "51c4556ec736f5bf2efd1f566794c9ca24b7f9ffb64dad66cef1bd49594d276b"
   solver-name = "gps-cdcl"
   solver-version = 1

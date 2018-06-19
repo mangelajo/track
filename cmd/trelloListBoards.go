@@ -16,36 +16,39 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"fmt"
 	"github.com/mangelajo/trello"
-	"github.com/mangelajo/track/pkg/storecache"
+	"fmt"
 	"os"
 )
 
-// trelloCmd represents the trello command
-var trelloCmd = &cobra.Command{
-	Use:   "trello",
-	Short: "Trello related commands",
+// cardListCmd represents the cardList command
+var boardListCmd = &cobra.Command{
+	Use:   "list-boards",
+	Short: "List boards available to user",
 	Long: ``,
+	Run: trelloListBoards,
 }
 
 func init() {
-	rootCmd.AddCommand(trelloCmd)
+	trelloCmd.AddCommand(boardListCmd)
 }
 
-func GetTrelloAuthURL() string {
-	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&" +
-		"response_type=token&name=Track&key=%s", trelloAppKey)
-}
 
-func GetTrelloClient() *trello.Client {
-	token := storecache.GetTrelloToken()
-	if token == nil || *token == "" {
-		fmt.Println("You need a token from trello, please visit: ")
-		fmt.Println(GetTrelloAuthURL())
-		fmt.Println("")
-		fmt.Println("Then run: track trello auth <<TOKEN>>")
+func trelloListBoards(cmd *cobra.Command, args []string) {
+
+	trelloClient := GetTrelloClient()
+
+	member, _ := trelloClient.GetMember("me", trello.Defaults())
+	boards, err := member.GetBoards(trello.Defaults())
+
+	if err != nil {
+		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
-	return trello.NewClient(trelloAppKey, *token)
+
+	fmt.Println("Boards:")
+
+	for _, b := range boards {
+		fmt.Printf(" - %s\t%s\t%s\n", b.ID, b.ShortUrl, b.Name)
+	}
 }
