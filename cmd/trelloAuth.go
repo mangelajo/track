@@ -25,7 +25,7 @@ import (
 // authCmd represents the auth command
 var authCmd = &cobra.Command{
 	Use:   "auth",
-	Short: "Receives, tests, and stores the trello auth token",
+	Short: "Stores the trello auth token",
 	Long: `Using the trello API requires an auth token which
 can be obtained from the website here:
 

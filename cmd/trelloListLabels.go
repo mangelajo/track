@@ -22,36 +22,35 @@ import (
 )
 
 // cardListCmd represents the cardList command
-var boardListCmd = &cobra.Command{
-	Use:   "boards",
-	Short: "List boards available to user",
+var labelListCmd = &cobra.Command{
+	Use:   "labels",
+	Short: "List labels available in board",
 	Long: ``,
-	Run: trelloListBoards,
+	Run: trelloListLabels,
 }
 
 func init() {
-	trelloCmd.AddCommand(boardListCmd)
+	trelloCmd.AddCommand(labelListCmd)
 }
 
 
-func trelloListBoards(cmd *cobra.Command, args []string) {
+func trelloListLabels(cmd *cobra.Command, args []string) {
 
-	trelloClient := GetTrelloClient()
-
-	member, _ := trelloClient.GetMember("me", trello.Defaults())
-	boards, err := member.GetBoards(trello.Defaults())
-
-	if err != nil {
-		fmt.Printf("Error: %s\n", err)
+	if len(args) != 1 {
+		fmt.Println("This command needs at least a board ID")
 		os.Exit(1)
 	}
 
-	fmt.Println("Boards:")
+	trelloClient := GetTrelloClient()
 
-	for _, b := range boards {
-		if b.Closed {
-			continue
-		}
-		fmt.Printf(" - %s\t%s\t%s\n", b.ID, b.ShortUrl, b.Name)
+	board:= FindBoard(trelloClient, args[0])
+
+	labels, err := board.GetLabels(trello.Defaults())
+	checkError(err)
+
+	fmt.Println("Labels:")
+
+	for _, label := range labels {
+		fmt.Printf(" - %s\t%s\t%s\n", label.ID, label.Color, label.Name)
 	}
 }

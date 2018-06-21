@@ -49,3 +49,36 @@ func GetTrelloClient() *trello.Client {
 	}
 	return trello.NewClient(trelloAppKey, *token)
 }
+
+func FindBoard(client *trello.Client, nameOrId string) *trello.Board {
+	if isID(nameOrId) {
+		board, err := client.GetBoard(nameOrId, trello.Defaults())
+		checkError(err)
+		return board
+	}
+
+	boards, err := client.SearchBoards(nameOrId, trello.Defaults())
+	checkError(err)
+	if len(boards) < 1 {
+		fmt.Println("No board found")
+		os.Exit(1)
+	}
+	fmt.Printf("Using board: %s\n", boards[0].Name)
+	return boards[0]
+}
+
+func isID(id string) bool {
+	if len(id) != 24 {
+		return false
+	}
+	for _, c := range id {
+		if c >= '0' && c<='9' {
+			continue
+		}
+		if c >= 'a' && c<='f' {
+			continue
+		}
+		return false
+	}
+	return true
+}

@@ -25,7 +25,7 @@ import (
 
 // cardListCmd represents the cardList command
 var moveCardsCmd = &cobra.Command{
-	Use:   "move-cards",
+	Use:   "move",
 	Short: "Move cards from board A to board B",
 	Long: ``,
 	Run: trelloMoveCards,
@@ -56,8 +56,7 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 
 	// Grab necessary data
 
-	srcBoard, err := trelloClient.GetBoard(args[0], trello.Defaults())
-	checkError(err)
+	srcBoard:= FindBoard(trelloClient, args[0])
 
 	srcLists, err := srcBoard.GetLists(trello.Defaults())
 	checkError(err)
@@ -65,8 +64,7 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 	srcCards, err := srcBoard.GetCards(trello.Defaults())
 	checkError(err)
 
-	dstBoard, err := trelloClient.GetBoard(args[1], trello.Defaults())
-	checkError(err)
+	dstBoard:= FindBoard(trelloClient, args[1])
 
 	dstCards, err := dstBoard.GetCards(trello.Defaults())
 	checkError(err)
