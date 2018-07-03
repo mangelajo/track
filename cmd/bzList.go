@@ -118,16 +118,17 @@ func bzList(cmd *cobra.Command, args []string) {
 }
 
 func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
+
 	for _, bz := range buglist {
 		fmt.Printf("%s\n", bz.String())
 	}
 
 	bzChan := grabBugzillasConcurrently(client, buglist)
 	var bugs []bugzilla.Cbug
-	fmt.Print("Grabbing bug details:")
+	fmt.Print("\nGrabbing bug details:")
 	for bi := range bzChan {
 		if !changedBugs || (changedBugs && !bi.Cached) {
-			if !dropInteractiveShell {
+			if !dropInteractiveShell && summary {
 				bi.Bug.ShortSummary(bugzilla.USE_COLOR)
 			} else if !bi.Cached {
 				fmt.Printf(" bz#%d", bi.Bug.Cbug_id.Number)
@@ -135,9 +136,9 @@ func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 			bugs = append(bugs, bi.Bug)
 		}
 	}
-	if dropInteractiveShell {
-		fmt.Println(" done.")
-	}
+
+	fmt.Println(" done.")
+
 	if preCacheHTML {
 		fmt.Print("Pre caching HTML:")
 		grabBugzillasHTMLConcurrently(client, buglist)

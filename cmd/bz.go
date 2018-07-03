@@ -30,7 +30,7 @@ var BzURL string
 var workers int
 var preCacheHTML bool
 var dropInteractiveShell bool
-
+var summary bool
 // bzCmd represents the bz command
 var bzCmd = &cobra.Command{
 	Use:   "bz",
@@ -42,11 +42,11 @@ func init() {
 	rootCmd.AddCommand(bzCmd)
 
 	bzCmd.PersistentFlags().StringP("bzurl", "b", "https://bugzilla.redhat.com", "Bugzilla URL")
-	bzCmd.PersistentFlags().StringP("bzemail", "u", "", "Bugzilla login email")
+	bzCmd.PersistentFlags().String("bzemail", "", "Bugzilla login email")
 	bzCmd.PersistentFlags().StringP("bzpass", "k", "", "Bugzilla login password")
 	bzCmd.PersistentFlags().BoolVarP(&preCacheHTML, "html", "x", false, "Pre-cache html for bz show command")
 	bzCmd.PersistentFlags().BoolVar(&dropInteractiveShell, "shell", false, "Start an interactive shell once the command is done")
-
+	bzCmd.PersistentFlags().BoolVarP(&summary, "summary", "u", false, "Show a summary of the bugs we retrieve")
 }
 
 func initBzConfig() {
