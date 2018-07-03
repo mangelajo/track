@@ -29,6 +29,10 @@
   name = "github.com/mitchellh/go-homedir"
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/mangelajo/trello"
+
+[[constraint]]
   name = "github.com/spf13/cobra"
   version = "0.0.3"
 

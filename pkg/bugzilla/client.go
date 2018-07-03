@@ -148,6 +148,8 @@ type BugListQuery struct {
 	WhiteBoard string
 	AssignedTo string
 	FlagRequestee string
+	TargetRelease string
+	TargetMilestone string
 
 }
 

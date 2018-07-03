@@ -195,12 +195,24 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 		q.Set("assigned_to", query.AssignedTo)
 	}
 
+	if query.TargetMilestone != "" {
+		q.Set("target_milestone", query.TargetMilestone)
+	}
+
 	if query.FlagRequestee != "" {
 		q.Set(fmt.Sprintf("f%d", advMatches), "requestees.login_name")
 		q.Set(fmt.Sprintf("o%d", advMatches), "substring")
 		q.Set(fmt.Sprintf("v%d", advMatches), query.FlagRequestee)
 		advMatches++
 	}
+
+	if query.TargetRelease != "" {
+		q.Set(fmt.Sprintf("f%d", advMatches), "target_release")
+		q.Set(fmt.Sprintf("o%d", advMatches), "substring")
+		q.Set(fmt.Sprintf("v%d", advMatches), query.TargetRelease)
+		advMatches++
+	}
+
 
 	u.RawQuery = q.Encode()
 	return u.String(), ""

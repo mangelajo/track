@@ -41,7 +41,8 @@ var assignedTo string
 var statusStr string
 var flagOn string
 var classStr string
-
+var targetMilestone string
+var targetRelease string
 
 func init() {
 
@@ -50,12 +51,15 @@ func init() {
 	bzListCmd.Flags().StringP("dfg", "d", "", "Openstack DFG")
 	bzListCmd.Flags().StringP("squad", "", "", "Openstack DFG Squad")
 	bzListCmd.Flags().StringVarP(&classStr, "class", "", "Red Hat", "Class on bugzilla")
-	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED,POST,MODIFIED,ON_DEV,ON_QA,VERIFIED,RELEASE_PENDING", "Status list separated by commas")
+	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED,POST,MODIFIED,ON_DEV,ON_QA", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
 	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee (you can use 'me'")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only bugs assigned to me")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
+	bzListCmd.Flags().StringVarP(&targetRelease, "target-release", "r", "", "Target release")
+	bzListCmd.Flags().StringVarP(&targetMilestone, "target-milestone", "t", "", "Target milestone")
+
 
 }
 
@@ -93,6 +97,8 @@ func bzList(cmd *cobra.Command, args []string) {
 		WhiteBoard:     getWhiteBoardQuery(),
 		AssignedTo:		assignedTo,
 		FlagRequestee:  flagOn,
+		TargetMilestone: targetMilestone,
+		TargetRelease: targetRelease,
 	}
 
 
