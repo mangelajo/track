@@ -54,7 +54,7 @@ func init() {
 	bzListCmd.Flags().StringVarP(&statusStr, "status", "s", "NEW,ASSIGNED,POST,MODIFIED,ON_DEV,ON_QA", "Status list separated by commas")
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
-	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee (you can use 'me'")
+	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee (you can use 'me')")
 	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only bugs assigned to me")
 	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
 	bzListCmd.Flags().StringVarP(&targetRelease, "target-release", "r", "", "Target release")
