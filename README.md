@@ -119,36 +119,75 @@ queries:
 If you want to list bugs on you, regardless of DFG (and you have a DFG in config)
 
 ```bash
-$ track bz list --me -d "" -x -u
-
-1399987 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1399987	   openstack-neutron	[RFE] allow to limit conntrack entries per tenant to avoid "nf_conntrack: table full, dropping packet"
+$ ./track bz list --me -d "" -x
 1546996 (     NEW)	majopela@redhat.com	https://bugzilla.redhat.com/1546996	python-networking-ovn	[RFE] [Neutron] [OVN] QoS support
-1546994 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1546994	python-networking-ovn	[RFE] [Neutron] [OVN] Productize a migration tool from ML2/OVS to OVN
+1570843 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1570843	python-networking-ovn	East/West traffic goes through controller node on DVR-VLAN deployment
+1565563 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1565563	python-networking-ovn	OVN L3HA - Not rescheduling gateways upon chassis addition can lead to routers not being in HA
+1581332 (    POST)	majopela@redhat.com	https://bugzilla.redhat.com/1581332	python-networking-ovn	Internal DNS resolution does not work for fqdn
+1546994 (    POST)	majopela@redhat.com	https://bugzilla.redhat.com/1546994	python-networking-ovn	[RFE] [Neutron] [OVN] Productize a migration tool from ML2/OVS to OVN
 
-BZ 1546994 (ASSIGNED) [RFE] [Neutron] [OVN] Productize a migration tool from ML2/OVS to OVN
-  Keywords: FutureFeature, Triaged
+Grabbing bug details: done.
+Pre caching HTML: bz#1546996 done.
+
+5 bugs found.
+```
+
+You can get an extended summary of each BZ with -u (or --summary):
+```bash
+$ ./track bz list --me -d "" -x -u
+1546996 (     NEW)	majopela@redhat.com	https://bugzilla.redhat.com/1546996	python-networking-ovn	[RFE] [Neutron] [OVN] QoS support
+1570843 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1570843	python-networking-ovn	East/West traffic goes through controller node on DVR-VLAN deployment
+1565563 (ASSIGNED)	majopela@redhat.com	https://bugzilla.redhat.com/1565563	python-networking-ovn	OVN L3HA - Not rescheduling gateways upon chassis addition can lead to routers not being in HA
+1581332 (    POST)	majopela@redhat.com	https://bugzilla.redhat.com/1581332	python-networking-ovn	Internal DNS resolution does not work for fqdn
+1546994 (    POST)	majopela@redhat.com	https://bugzilla.redhat.com/1546994	python-networking-ovn	[RFE] [Neutron] [OVN] Productize a migration tool from ML2/OVS to OVN
+
+Grabbing bug details: done.
+
+BZ 1581332 (    POST) Internal DNS resolution does not work for fqdn
+  Product: Red Hat OpenStack ver: 13.0 (Queens) target: 13.0 (Queens) (z1)
+  Keywords: Triaged, ZStream
   Assigned to: majopela@redhat.com
-  * bugzilla: http://bugzilla.redhat.com/1546994
-  * Red Hat Customer Portal : https://access.redhat.com/support/cases/02058676
+  * bugzilla: http://bugzilla.redhat.com/1581332
+  * OpenStack gerrit : https://review.openstack.org/#/c/556828/
+  * Red Hat Engineering Gerrit : https://code.engineering.redhat.com/gerrit/#/c/140039
+  * Launchpad : https://bugs.launchpad.net/bugs/1757074
+
+BZ 1565563 (ASSIGNED) OVN L3HA - Not rescheduling gateways upon chassis addition can lead to routers not being in HA
+  Product: Red Hat OpenStack ver: 13.0 (Queens) target: 13.0 (Queens) (zstream)
+  Keywords: Triaged, ZStream
+  Assigned to: majopela@redhat.com
+  * bugzilla: http://bugzilla.redhat.com/1565563
+  * Launchpad : https://bugs.launchpad.net/bugs/1762691
 
 BZ 1546996 (     NEW) [RFE] [Neutron] [OVN] QoS support
-  Keywords: FutureFeature
+  Product: Red Hat OpenStack ver: 14.0 (Rocky) target: --- (---)
+  Keywords: FutureFeature, RFE
   Assigned to: majopela@redhat.com
   * bugzilla: http://bugzilla.redhat.com/1546996
   * OpenStack gerrit : https://review.openstack.org/#/c/265798/
   * Red Hat Customer Portal : https://access.redhat.com/support/cases/02058676
 
-BZ 1399987 (ASSIGNED) [RFE] allow to limit conntrack entries per tenant to avoid "nf_conntrack: table full, dropping packet"
-  Keywords: FutureFeature, ZStream
+BZ 1570843 (ASSIGNED) East/West traffic goes through controller node on DVR-VLAN deployment
+  Product: Red Hat OpenStack ver: 13.0 (Queens) target: 13.0 (Queens) (zstream)
+  Keywords: Reopened, Triaged, ZStream
   Assigned to: majopela@redhat.com
-  * bugzilla: http://bugzilla.redhat.com/1399987
-  * Red Hat Customer Portal : https://access.redhat.com/support/cases/02037820
-  * Red Hat Customer Portal : https://access.redhat.com/support/cases/01973106
-  * Red Hat Customer Portal : https://access.redhat.com/support/cases/01955752
-  * Red Hat Customer Portal : https://access.redhat.com/support/cases/01747905
+  * bugzilla: http://bugzilla.redhat.com/1570843
 
-Pre caching HTML: bz#1546994 bz#1546996 bz#1399987
+BZ 1546994 (    POST) [RFE] [Neutron] [OVN] Productize a migration tool from ML2/OVS to OVN
+  Product: Red Hat OpenStack ver: 14.0 (Rocky) target: 14.0 (Rocky) (Upstream M2)
+  Keywords: FutureFeature, RFE, Triaged
+  Assigned to: majopela@redhat.com
+  * bugzilla: http://bugzilla.redhat.com/1546994
+  * OpenStack gerrit : https://review.openstack.org/#/c/510460/
+  * Red Hat Customer Portal : https://access.redhat.com/support/cases/02058676
+
+ done.
+Pre caching HTML: done.
+
+5 bugs found.
+
 ```
+
 
 This will let you open a pre-cached bugzilla in your browser.
 ```bash
