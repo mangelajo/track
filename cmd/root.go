@@ -21,6 +21,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 var cfgFile string
@@ -76,12 +77,13 @@ bzurl: https://bugzilla.redhat.com
 bzemail: xxxxx@redhat.com
 bzpass: xxxxxxxx
 dfg: Networking
-htmlOpenCommand: xdg-open
+htmlOpenCommand: xdg-open  # note: for OSX use open instead
 queries:
     ovn-new: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&classification=Red%20Hat&component=python-networking-ovn&list_id=8959835&product=Red%20Hat%20OpenStack&query_format=advanced
     ovn-rfes: https://bugzilla.redhat.com/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=MODIFIED&bug_status=ON_DEV&bug_status=POST&bug_status=ON_QA&classification=Red%20Hat&component=python-networking-ovn&f1=keywords&f2=short_desc&j_top=OR&list_id=8959855&o1=substring&o2=substring&product=Red%20Hat%20OpenStack&query_format=advanced&v1=RFE&v2=RFE
-
-# notes: for OSX use htmlOpenCommand: open
+users:
+    colleague1@email.com
+    colleague2@email.com
 
 `)
 }
@@ -117,4 +119,25 @@ func initConfig() {
 	}
 
 	initBzConfig()
+}
+
+func findEmail(user string) (email string){
+
+	// if the user is "me", it's our email
+	if user == "me" {
+		return BzEmail
+	}
+
+	// If the user already has a @ we assume it's a valid email
+	if strings.Contains(user, "@") ||  !viper.InConfig("users") {
+		return user
+	}
+
+	users := viper.GetStringMapString("users")
+	email, ok := users[user]
+	if ok {
+		return email
+	} else {
+		return user
+	}
 }

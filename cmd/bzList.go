@@ -95,19 +95,10 @@ func bzList(cmd *cobra.Command, args []string) {
 		Component: 		componentStr,
 		BugStatus:      statusSelectors,
 		WhiteBoard:     getWhiteBoardQuery(),
-		AssignedTo:		assignedTo,
-		FlagRequestee:  flagOn,
+		AssignedTo:     findEmail(assignedTo),
+		FlagRequestee:  findEmail(flagOn),
 		TargetMilestone: targetMilestone,
 		TargetRelease: targetRelease,
-	}
-
-
-	if myBugs || query.AssignedTo == "me" {
-		query.AssignedTo = BzEmail
-	}
-
-	if query.FlagRequestee == "me" {
-		query.FlagRequestee = BzEmail
 	}
 
 	client := GetBzClient()
