@@ -87,6 +87,10 @@ func bzList(cmd *cobra.Command, args []string) {
 
 	statusSelectors := strings.Split(statusStr, ",")
 
+	if myBugs {
+		assignedTo = "me"
+	}
+
 	query := bugzilla.BugListQuery{
 		Limit:          listLimit,
 		Offset:         listOffset,
