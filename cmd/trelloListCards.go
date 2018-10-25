@@ -24,7 +24,7 @@ import (
 
 // cardListCmd represents the cardList command
 var cardListCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "cards",
 	Short: "List cards available in board",
 	Long: ``,
 	Run: trelloListCards,
@@ -32,16 +32,20 @@ var cardListCmd = &cobra.Command{
 
 func init() {
 	trelloCmd.AddCommand(cardListCmd)
-	cardListCmd.Flags().BoolVarP(&myCards,"me", "m", false,"List only bugs assigned to me")
-	cardListCmd.Flags().StringVarP(&cardDFG,"dfg", "d", "","List only bugs with DFG custom field")
-	cardListCmd.Flags().BoolVar(&cardNoDFG,"no-dfg", false,"List only bugs with no DFG custom field")
+	cardListCmd.Flags().BoolVarP(&myCards,"me", "m", false,"List only cards assigned to me")
+	cardListCmd.Flags().StringVarP(&cardDFG,"dfg", "d", "","List only cards with DFG custom field")
+	cardListCmd.Flags().BoolVar(&cardNoDFG,"no-dfg", false,"List only cards with no DFG custom field")
+	cardListCmd.Flags().StringVar(&cardList, "list", "", "List only cards on a specific List")
 }
 
 var myCards bool
 var cardDFG string
 var cardNoDFG bool
+var cardList string
 
 func trelloListCards(cmd *cobra.Command, args []string) {
+
+	var listID *string = nil
 
 	if len(args) != 1 {
 		fmt.Println("This command needs at least a board ID")
@@ -70,6 +74,15 @@ func trelloListCards(cmd *cobra.Command, args []string) {
 	listMap := map[string] string {}
 	for _, list := range(lists) {
 		listMap[list.ID] = list.Name
+		if cardList != "" && strings.Contains(strings.ToUpper(list.Name),
+										      strings.ToUpper(cardList)) {
+			listID = &list.ID
+		}
+	}
+
+	if cardList != "" && listID == nil {
+		fmt.Printf("Unknown list %s for board %s", cardList, args[0])
+		os.Exit(1)
 	}
 
 
@@ -99,12 +112,16 @@ func trelloListCards(cmd *cobra.Command, args []string) {
 		}
 
 		if currentList != card.IDList {
-			fmt.Println("")
-			fmt.Println(listMap[card.IDList])
+			if listID == nil || card.IDList == *listID {
+				fmt.Println("")
+				fmt.Println(listMap[card.IDList])
+			}
 			currentList = card.IDList
 		}
 
-		fmt.Printf(" - %s\t%v\n", card.ShortUrl, card.Name)
+		if listID == nil || currentList == *listID {
+			fmt.Printf(" - %s\t%v\n", card.ShortUrl, card.Name)
+		}
 
 	}
 }
