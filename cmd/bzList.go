@@ -181,17 +181,18 @@ func grabBugzillasConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) 
 			wg.Done()
 		}()
 	}
-	// when all workers have finished we close the output channel
 	go func() {
+		// Grab all bugs from the list and push them into the channel
+		for _, bug := range buglist {
+			bugs <- bug
+		}
+		close(bugs)
+
+		// when all workers have finished we close the output channel
 		wg.Wait()
 		close(bzChan)
 	}()
 
-	// Grab all bugs from the list and push them into the channel
-	for _, bug := range buglist {
-		bugs <- bug
-	}
-	close(bugs)
 	return bzChan
 }
 
