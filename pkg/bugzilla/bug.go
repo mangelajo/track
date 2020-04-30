@@ -4,8 +4,8 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
-	"time"
 	"strings"
+	"time"
 )
 
 // Bug bugzilla bug data structure
@@ -25,11 +25,9 @@ type Bug struct {
 
 func (b *Bug) String() string {
 
-	return fmt.Sprintf("%d (%8s)\t%s\t%s\t%20s\t%s",b.ID, b.Status,
-		b.Assignee, strings.Replace(b.URL, "show_bug.cgi?id=", "", 1), b.Component , b.Subject )
+	return fmt.Sprintf("%d (%8s)\t%s\t%s\t%20s\t%s", b.ID, b.Status,
+		b.Assignee, strings.Replace(b.URL, "show_bug.cgi?id=", "", 1), b.Component, b.Subject)
 }
-
-
 
 //NewBugFromBzBug constructor for Bug
 func NewBugFromBzBug(protoBug bzBug) (bug *Bug, err error) {
@@ -42,9 +40,8 @@ func NewBugFromBzBug(protoBug bzBug) (bug *Bug, err error) {
 		Status:     protoBug.Status,
 		Resolution: protoBug.Resolution,
 		Subject:    protoBug.Description,
-		PMScore:	protoBug.PMScore,
+		PMScore:    protoBug.PMScore,
 		Severity:   protoBug.Severity,
-
 	}
 
 	parser := &combinedParser{}

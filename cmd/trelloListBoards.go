@@ -15,24 +15,24 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/trello"
 	"fmt"
 	"os"
+
+	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
 )
 
 // cardListCmd represents the cardList command
 var boardListCmd = &cobra.Command{
 	Use:   "boards",
 	Short: "List boards available to user",
-	Long: ``,
-	Run: trelloListBoards,
+	Long:  ``,
+	Run:   trelloListBoards,
 }
 
 func init() {
 	trelloCmd.AddCommand(boardListCmd)
 }
-
 
 func trelloListBoards(cmd *cobra.Command, args []string) {
 

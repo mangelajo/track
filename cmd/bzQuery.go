@@ -15,14 +15,15 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/track/pkg/bugzilla"
 	"fmt"
-	"strings"
 	"os"
-	"github.com/spf13/viper"
-)
+	"strings"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/mangelajo/track/pkg/bugzilla"
+)
 
 var bzQueryCmd = &cobra.Command{
 	Use:   "query",
@@ -60,14 +61,13 @@ func findQuery(name string) string {
 		os.Exit(1)
 	}
 	return strings.Replace(location,
-				       toReplace, "", 1)
-
+		toReplace, "", 1)
 
 }
 
 func bzQuery(cmd *cobra.Command, args []string) {
 
-	if len(args)<1 {
+	if len(args) < 1 {
 		fmt.Println("We need at least one target query.")
 		os.Exit(1)
 	}
@@ -81,6 +81,3 @@ func bzQuery(cmd *cobra.Command, args []string) {
 	listBugs(bugList, client)
 
 }
-
-
-

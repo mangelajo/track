@@ -1,11 +1,12 @@
 package bugzilla
 
 import (
-	"encoding/xml"
-	"io"
 	"encoding/csv"
-	"strconv"
+	"encoding/xml"
 	"fmt"
+	"io"
+	"strconv"
+
 	"github.com/spf13/viper"
 )
 
@@ -80,7 +81,7 @@ type bzBug struct {
 	Resolution  string   `xml:"resolution"`
 	Description string   `xml:"short_desc"`
 	Changed     string   `xml:"changeddate"`
-	Severity 	string   `xml:"bug_severity"`
+	Severity    string   `xml:"bug_severity"`
 	PMScore     int      `xml:"Ccf_pm_score"`
 }
 
@@ -118,7 +119,6 @@ func getInt(colData map[string]string, col string, defaultVal int) int {
 	}
 }
 
-
 // bug_id,"product","component","assigned_to","bug_status","resolution","short_desc","changeddate"
 func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 	csvreader := csv.NewReader(reader)
@@ -140,12 +140,12 @@ func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 			colData[cNames[i]] = data
 		}
 
-		bz_id := getInt(colData,"Bug ID", 0)
+		bz_id := getInt(colData, "Bug ID", 0)
 
 		//TODO:mangelajo remove coupling on viper.Get
 
 		results = append(results, bzBug{
-			ID:			 bz_id,
+			ID:          bz_id,
 			URL:         fmt.Sprintf("%s/show_bug.cgi?id=%d", viper.Get("bzurl"), bz_id),
 			Product:     get(colData, "Product"),
 			Component:   get(colData, "Component"),
@@ -154,9 +154,8 @@ func parseBugzCSV(reader io.Reader) (results []bzBug, err error) {
 			Resolution:  get(colData, "Resolution"),
 			Description: get(colData, "Summary"),
 			Changed:     get(colData, "Changed"),
-			PMScore:	 getInt(colData, "PM Score", 0),
+			PMScore:     getInt(colData, "PM Score", 0),
 			Severity:    get(colData, "Severity"),
-
 		})
 	}
 	return results, nil

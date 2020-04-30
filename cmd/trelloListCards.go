@@ -15,26 +15,27 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/trello"
 	"fmt"
-	"strings"
 	"os"
+	"strings"
+
+	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
 )
 
 // cardListCmd represents the cardList command
 var cardListCmd = &cobra.Command{
 	Use:   "cards",
 	Short: "List cards available in board",
-	Long: ``,
-	Run: trelloListCards,
+	Long:  ``,
+	Run:   trelloListCards,
 }
 
 func init() {
 	trelloCmd.AddCommand(cardListCmd)
-	cardListCmd.Flags().BoolVarP(&myCards,"me", "m", false,"List only cards assigned to me")
-	cardListCmd.Flags().StringVarP(&cardDFG,"dfg", "d", "","List only cards with DFG custom field")
-	cardListCmd.Flags().BoolVar(&cardNoDFG,"no-dfg", false,"List only cards with no DFG custom field")
+	cardListCmd.Flags().BoolVarP(&myCards, "me", "m", false, "List only cards assigned to me")
+	cardListCmd.Flags().StringVarP(&cardDFG, "dfg", "d", "", "List only cards with DFG custom field")
+	cardListCmd.Flags().BoolVar(&cardNoDFG, "no-dfg", false, "List only cards with no DFG custom field")
 	cardListCmd.Flags().StringVar(&cardList, "list", "", "List only cards on a specific List")
 }
 
@@ -57,25 +58,25 @@ func trelloListCards(cmd *cobra.Command, args []string) {
 	me, err := trelloClient.GetMember("me", trello.Defaults())
 	checkError(err)
 
-	board:= FindBoard(trelloClient, args[0])
+	board := FindBoard(trelloClient, args[0])
 
 	cfields, err := board.GetCustomFields(trello.Defaults())
 	checkError(err)
 
-	cards, err := board.GetCards(map[string]string {
-		"customFieldItems":"true",
-		"fields": "all",
+	cards, err := board.GetCards(map[string]string{
+		"customFieldItems": "true",
+		"fields":           "all",
 	})
 	checkError(err)
 
 	lists, err := board.GetLists(trello.Defaults())
 	checkError(err)
 
-	listMap := map[string] string {}
-	for _, list := range(lists) {
+	listMap := map[string]string{}
+	for _, list := range lists {
 		listMap[list.ID] = list.Name
 		if cardList != "" && strings.Contains(strings.ToUpper(list.Name),
-										      strings.ToUpper(cardList)) {
+			strings.ToUpper(cardList)) {
 			listID = &list.ID
 		}
 	}
@@ -84,7 +85,6 @@ func trelloListCards(cmd *cobra.Command, args []string) {
 		fmt.Printf("Unknown list %s for board %s", cardList, args[0])
 		os.Exit(1)
 	}
-
 
 	currentList := ""
 

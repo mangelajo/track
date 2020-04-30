@@ -15,10 +15,12 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"fmt"
 	"os"
+
 	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
+
 	"github.com/mangelajo/track/pkg/storecache"
 )
 

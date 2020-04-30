@@ -1,11 +1,13 @@
 package show
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"os/exec"
-	"github.com/spf13/viper"
 	"strings"
+
+	"github.com/spf13/viper"
+
 	"github.com/mangelajo/track/pkg/bugzilla"
 	"github.com/mangelajo/track/pkg/storecache"
 )
@@ -31,8 +33,6 @@ func OpenBz(bzId int, getClient func() *bugzilla.Client) int {
 	}
 }
 
-
-
 func openHTML(bzid int, html *[]byte) {
 	filename := fmt.Sprintf("/tmp/bz%d.html", bzid)
 	fmt.Printf("Wrote %s\n", filename)
@@ -52,9 +52,9 @@ func writeHTML(html *[]byte, outputFile string) {
 	htmlStr := string(*html)
 
 	// This rewrites the links in the html from relative to absolute
-	htmlStr = strings.Replace(htmlStr,"src=\"", "src=\"" + viper.Get("bzurl").(string) + "/" , -1)
-	htmlStr = strings.Replace(htmlStr,"href=\"", "href=\"" + viper.Get("bzurl").(string) + "/" , -1)
-	htmlStr = strings.Replace(htmlStr,"action=\"", "action=\"" + viper.Get("bzurl").(string) + "/" , -1)
+	htmlStr = strings.Replace(htmlStr, "src=\"", "src=\""+viper.Get("bzurl").(string)+"/", -1)
+	htmlStr = strings.Replace(htmlStr, "href=\"", "href=\""+viper.Get("bzurl").(string)+"/", -1)
+	htmlStr = strings.Replace(htmlStr, "action=\"", "action=\""+viper.Get("bzurl").(string)+"/", -1)
 
 	f, err := os.Create(outputFile)
 	defer f.Close()
@@ -68,6 +68,3 @@ func writeHTML(html *[]byte, outputFile string) {
 	f.Write(data)
 
 }
-
-
-

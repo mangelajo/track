@@ -15,18 +15,20 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"fmt"
-	"github.com/mangelajo/trello"
-	"github.com/mangelajo/track/pkg/storecache"
 	"os"
+
+	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
+
+	"github.com/mangelajo/track/pkg/storecache"
 )
 
 // trelloCmd represents the trello command
 var trelloCmd = &cobra.Command{
 	Use:   "trello",
 	Short: "Trello related commands",
-	Long: ``,
+	Long:  ``,
 }
 
 func init() {
@@ -34,7 +36,7 @@ func init() {
 }
 
 func GetTrelloAuthURL() string {
-	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&" +
+	return fmt.Sprintf("https://trello.com/1/authorize?expiration=never&scope=read,write,account&"+
 		"response_type=token&name=Track&key=%s", trelloAppKey)
 }
 
@@ -72,10 +74,10 @@ func isID(id string) bool {
 		return false
 	}
 	for _, c := range id {
-		if c >= '0' && c<='9' {
+		if c >= '0' && c <= '9' {
 			continue
 		}
-		if c >= 'a' && c<='f' {
+		if c >= 'a' && c <= 'f' {
 			continue
 		}
 		return false

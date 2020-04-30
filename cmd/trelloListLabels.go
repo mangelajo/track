@@ -15,24 +15,24 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/trello"
 	"fmt"
 	"os"
+
+	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
 )
 
 // cardListCmd represents the cardList command
 var labelListCmd = &cobra.Command{
 	Use:   "labels",
 	Short: "List labels available in board",
-	Long: ``,
-	Run: trelloListLabels,
+	Long:  ``,
+	Run:   trelloListLabels,
 }
 
 func init() {
 	trelloCmd.AddCommand(labelListCmd)
 }
-
 
 func trelloListLabels(cmd *cobra.Command, args []string) {
 
@@ -43,7 +43,7 @@ func trelloListLabels(cmd *cobra.Command, args []string) {
 
 	trelloClient := GetTrelloClient()
 
-	board:= FindBoard(trelloClient, args[0])
+	board := FindBoard(trelloClient, args[0])
 
 	labels, err := board.GetLabels(trello.Defaults())
 	checkError(err)
