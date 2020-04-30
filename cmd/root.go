@@ -17,11 +17,11 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 var cfgFile string
@@ -114,14 +114,14 @@ func initConfig() {
 		fmt.Printf("Could not read config file: %s \n", err)
 	}
 
-	for _, k := range []string {"htmlOpenCommand"} {
+	for _, k := range []string{"htmlOpenCommand"} {
 		viper.BindPFlag(k, rootCmd.PersistentFlags().Lookup(k))
 	}
 
 	initBzConfig()
 }
 
-func findEmail(user string) (email string){
+func findEmail(user string) (email string) {
 
 	// if the user is "me", it's our email
 	if user == "me" {
@@ -129,7 +129,7 @@ func findEmail(user string) (email string){
 	}
 
 	// If the user already has a @ we assume it's a valid email
-	if strings.Contains(user, "@") ||  !viper.InConfig("users") {
+	if strings.Contains(user, "@") || !viper.InConfig("users") {
 		return user
 	}
 

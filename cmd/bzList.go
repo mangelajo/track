@@ -15,12 +15,14 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/track/pkg/bugzilla"
 	"fmt"
-	"sync"
-	"github.com/spf13/viper"
 	"strings"
+	"sync"
+
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/mangelajo/track/pkg/bugzilla"
 	"github.com/mangelajo/track/pkg/shell"
 )
 
@@ -55,11 +57,10 @@ func init() {
 	bzListCmd.Flags().StringVarP(&componentStr, "component", "c", "", "Component")
 	bzListCmd.Flags().StringVarP(&productStr, "product", "p", "", "Product")
 	bzListCmd.Flags().StringVarP(&assignedTo, "assignee", "a", "", "Filter by assignee (you can use 'me')")
-	bzListCmd.Flags().BoolVarP(&myBugs,"me", "m", false,"List only bugs assigned to me")
-	bzListCmd.Flags().BoolVarP(&changedBugs,"changed", "", false,"Show bugs changed since last run")
+	bzListCmd.Flags().BoolVarP(&myBugs, "me", "m", false, "List only bugs assigned to me")
+	bzListCmd.Flags().BoolVarP(&changedBugs, "changed", "", false, "Show bugs changed since last run")
 	bzListCmd.Flags().StringVarP(&targetRelease, "target-release", "r", "", "Target release")
 	bzListCmd.Flags().StringVarP(&targetMilestone, "target-milestone", "t", "", "Target milestone")
-
 
 }
 
@@ -92,22 +93,22 @@ func bzList(cmd *cobra.Command, args []string) {
 	}
 
 	query := bugzilla.BugListQuery{
-		Limit:          listLimit,
-		Offset:         listOffset,
-		Classification: classStr,
-		Product:        productStr,
-		Component: 		componentStr,
-		BugStatus:      statusSelectors,
-		WhiteBoard:     getWhiteBoardQuery(),
-		AssignedTo:     findEmail(assignedTo),
-		FlagRequestee:  findEmail(flagOn),
+		Limit:           listLimit,
+		Offset:          listOffset,
+		Classification:  classStr,
+		Product:         productStr,
+		Component:       componentStr,
+		BugStatus:       statusSelectors,
+		WhiteBoard:      getWhiteBoardQuery(),
+		AssignedTo:      findEmail(assignedTo),
+		FlagRequestee:   findEmail(flagOn),
 		TargetMilestone: targetMilestone,
-		TargetRelease: targetRelease,
+		TargetRelease:   targetRelease,
 	}
 
 	client := GetBzClient()
 
-	buglist, _:= client.BugList(&query)
+	buglist, _ := client.BugList(&query)
 
 	listBugs(buglist, client)
 }
@@ -156,7 +157,7 @@ func listBugs(buglist []bugzilla.Bug, client *bugzilla.Client) {
 
 type BugzillaResponse struct {
 	Cached bool
-	Bug bugzilla.Cbug
+	Bug    bugzilla.Cbug
 }
 
 func grabBugzillasConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) chan BugzillaResponse {
@@ -195,7 +196,6 @@ func grabBugzillasConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) 
 
 	return bzChan
 }
-
 
 func grabBugzillasHTMLConcurrently(client *bugzilla.Client, buglist []bugzilla.Bug) {
 

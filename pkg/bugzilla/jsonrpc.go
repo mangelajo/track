@@ -83,7 +83,6 @@ func (client *bugzillaJSONRPCClient) SetCookies(cookies []*http.Cookie) {
 	client.httpClient.Jar.SetCookies(url, cookies)
 }
 
-
 // bugzillaVersion returns Bugzilla version
 func (client *bugzillaJSONRPCClient) bugzillaVersion() (version string, err error) {
 	var result map[string]interface{}
@@ -110,7 +109,6 @@ func (client *bugzillaJSONRPCClient) bugsInfo(idList []int, token string) (bugIn
 	}
 	return bugInfo, nil
 }
-
 
 // bugsHistory returns history of selected bugzilla tickets
 func (client *bugzillaJSONRPCClient) bugsHistory(idList []int, token string) (bugInfo map[string]interface{}, err error) {

@@ -16,10 +16,11 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
+
 	"github.com/mangelajo/track/pkg/bugzilla"
 	"github.com/mangelajo/track/pkg/storecache"
 )
@@ -31,11 +32,12 @@ var workers int
 var preCacheHTML bool
 var dropInteractiveShell bool
 var summary bool
+
 // bzCmd represents the bz command
 var bzCmd = &cobra.Command{
 	Use:   "bz",
 	Short: "Bugzilla related commands",
-	Long: ``,
+	Long:  ``,
 }
 
 func init() {
@@ -50,14 +52,13 @@ func init() {
 }
 
 func initBzConfig() {
-	for _, k := range []string {"bzurl", "bzemail", "bzpass"} {
+	for _, k := range []string{"bzurl", "bzemail", "bzpass"} {
 		viper.BindPFlag(k, bzCmd.PersistentFlags().Lookup(k))
 	}
 
-	for _, k := range []string {"dfg", "squad"} {
+	for _, k := range []string{"dfg", "squad"} {
 		viper.BindPFlag(k, bzListCmd.Flags().Lookup(k))
 	}
-
 
 	BzURL = viper.GetString("bzurl")
 	BzPassword = viper.GetString("bzpass")
@@ -70,7 +71,6 @@ func initBzConfig() {
 	}
 
 }
-
 
 func GetBzClient() *bugzilla.Client {
 	client, err := bugzilla.NewClient(BzURL, BzEmail, BzPassword, storecache.GetBzAuth,

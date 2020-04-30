@@ -16,16 +16,15 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
-	"os"
 )
 
 var (
 	Version string
 	Build   string
 )
-
 
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{

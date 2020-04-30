@@ -1,13 +1,14 @@
 package storecache
 
 import (
-	"github.com/boltdb/bolt"
-	"fmt"
-	"errors"
 	"encoding/binary"
-	"time"
-	"os"
+	"errors"
+	"fmt"
 	"net/http"
+	"os"
+	"time"
+
+	"github.com/boltdb/bolt"
 )
 
 var db *bolt.DB = nil
@@ -16,12 +17,12 @@ const credentialsBucket = "credentials"
 
 func Open(path string) {
 	var err error
-	db, err = bolt.Open(path, 0600,  &bolt.Options{Timeout: 5 * time.Second})
+	db, err = bolt.Open(path, 0600, &bolt.Options{Timeout: 5 * time.Second})
 
 	if err != nil {
 		fmt.Printf("Error opening bolt db: %s\n", path)
 		fmt.Printf("Reason: %s", err)
-		if  err.Error() == "timeout" {
+		if err.Error() == "timeout" {
 			fmt.Println("\n")
 			fmt.Println("Possibly another instance of track has the database locked")
 			fmt.Println("please close any other instance, or delete the database")
@@ -51,14 +52,13 @@ func itob(v int, isXML bool) []byte {
 	}
 }
 
-
 func RetrieveCache(bzID int, currentDateTime string, isXml bool) (xmlContent *[]byte, errRes error) {
 
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(itob(bzID, isXml))
 		if b == nil {
 			errRes = errors.New("Not found")
-			return errRes;
+			return errRes
 		}
 		v := b.Get([]byte("lastDateTime"))
 		if currentDateTime != "" && string(v) != currentDateTime {
@@ -92,7 +92,6 @@ func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 	})
 }
 
-
 func StoreBzAuth(cookies []*http.Cookie, authToken string) {
 	bucketName := []byte("credentials")
 
@@ -107,27 +106,27 @@ func StoreBzAuth(cookies []*http.Cookie, authToken string) {
 		}
 		b.Put([]byte("token"), []byte(authToken))
 
-		for _, cookie := range(cookies) {
+		for _, cookie := range cookies {
 			b.Put([]byte(cookie.Name), []byte(cookie.Value))
 		}
 		return nil
 	})
 }
 
-func GetBzAuth() (cookies []*http.Cookie , authToken *string) {
+func GetBzAuth() (cookies []*http.Cookie, authToken *string) {
 	bucketName := []byte("credentials")
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucketName)
 		if b == nil {
 			errRes := errors.New("Not found")
-			return errRes;
+			return errRes
 		}
 
-		for _, n := range([]string {"Bugzilla_login", "Bugzilla_logincookie"}) {
+		for _, n := range []string{"Bugzilla_login", "Bugzilla_logincookie"} {
 			v := b.Get([]byte(n))
 			if v != nil {
-				cookies=append(cookies, &http.Cookie{
-					Name: n,
+				cookies = append(cookies, &http.Cookie{
+					Name:  n,
 					Value: string(v),
 				})
 
@@ -170,7 +169,7 @@ func getString(bucket string, key string) (value *string) {
 		b := tx.Bucket(bucketName)
 		if b == nil {
 			errRes := errors.New("Not found")
-			return errRes;
+			return errRes
 		}
 
 		v := b.Get([]byte(key))
@@ -188,6 +187,6 @@ func StoreTrelloToken(authToken string) {
 	storeString(credentialsBucket, "trelloToken", authToken)
 }
 
-func GetTrelloToken() (authToken *string){
+func GetTrelloToken() (authToken *string) {
 	return getString(credentialsBucket, "trelloToken")
 }

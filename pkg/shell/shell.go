@@ -1,19 +1,21 @@
 package shell
 
 import (
-	"github.com/abiosoft/ishell"
-	"github.com/mangelajo/track/pkg/bugzilla"
-	"strconv"
-	"github.com/mangelajo/track/pkg/show"
 	"fmt"
+	"strconv"
 	"time"
+
+	"github.com/abiosoft/ishell"
+
+	"github.com/mangelajo/track/pkg/bugzilla"
+	"github.com/mangelajo/track/pkg/show"
 )
 
-var shellBugs map[int32] *bugzilla.Cbug = make(map[int32] *bugzilla.Cbug)
+var shellBugs map[int32]*bugzilla.Cbug = make(map[int32]*bugzilla.Cbug)
 
 func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 
-	bzNames := []string {}
+	bzNames := []string{}
 
 	if len(*bugs) == 0 {
 		fmt.Println("\nNo bugs for the shell, bye! :)\n")
@@ -54,7 +56,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 	})
 
 	shell.AddCmd(&ishell.Cmd{
-		Name: "show",
+		Name:    "show",
 		Aliases: []string{"s"},
 		Func: func(c *ishell.Context) {
 
@@ -67,18 +69,18 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 						bug.ShortSummary(bugzilla.USE_COLOR)
 					}
 				}
-			}  else if len(c.Args) == 0 {
+			} else if len(c.Args) == 0 {
 				bug := (*bugs)[currentBugN]
 				fmt.Println("")
 				bug.ShortSummary(bugzilla.USE_COLOR)
 			}
 		},
-		Help: "show a bugzilla",
+		Help:      "show a bugzilla",
 		Completer: func([]string) []string { return bzNames },
 	})
 
 	shell.AddCmd(&ishell.Cmd{
-		Name: "next",
+		Name:    "next",
 		Aliases: []string{"n"},
 		Func: func(c *ishell.Context) {
 
@@ -96,7 +98,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 	})
 
 	shell.AddCmd(&ishell.Cmd{
-		Name: "prev",
+		Name:    "prev",
 		Aliases: []string{"p"},
 		Func: func(c *ishell.Context) {
 
@@ -114,7 +116,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 	})
 
 	shell.AddCmd(&ishell.Cmd{
-		Name: "go",
+		Name:    "go",
 		Aliases: []string{"g"},
 		Func: func(c *ishell.Context) {
 
@@ -128,19 +130,19 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 						show.OpenURL(bug.URL())
 					}
 				}
-			}  else if len(c.Args) == 0 {
+			} else if len(c.Args) == 0 {
 
 				bug := (*bugs)[currentBugN]
 				fmt.Println("Opening ", bug.URL())
 				show.OpenURL(bug.URL())
 			}
 		},
-		Help: "open bugzilla from server url",
+		Help:      "open bugzilla from server url",
 		Completer: func([]string) []string { return bzNames },
 	})
 
 	shell.AddCmd(&ishell.Cmd{
-		Name: "links",
+		Name:    "links",
 		Aliases: []string{"l"},
 		Func: func(c *ishell.Context) {
 
@@ -156,7 +158,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 				}
 			}
 
-			if len(bug.Cexternal_bugs)<1 {
+			if len(bug.Cexternal_bugs) < 1 {
 				return
 			}
 
@@ -167,12 +169,12 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 
 			var choices []int
 
-			if len(links)>1 {
+			if len(links) > 1 {
 				choices = c.Checklist(links,
 					"Please select the links you want to open",
 					nil)
 			} else {
-				choices = []int {0}
+				choices = []int{0}
 			}
 
 			urls := func() (c []string) {
@@ -188,7 +190,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 				time.Sleep(500 * time.Millisecond)
 			}
 		},
-		Help: "open links from bugzilla",
+		Help:      "open links from bugzilla",
 		Completer: func([]string) []string { return bzNames },
 	})
 

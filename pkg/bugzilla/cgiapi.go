@@ -1,6 +1,7 @@
 package bugzilla
 
 import (
+	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,7 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"encoding/xml"
+
 	"github.com/mangelajo/track/pkg/storecache"
 )
 
@@ -140,7 +141,7 @@ func (client *bugzillaCGIClient) SetCookies(cookies []*http.Cookie) {
 	client.httpClient.Jar.SetCookies(url, cookies)
 }
 
-func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
+func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string) {
 
 	u.Path = "buglist.cgi"
 
@@ -156,9 +157,9 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 
 	q := u.Query()
 
-	q.Set("ctype","csv")
-	q.Set("columnlist","product,component,bug_severity,cf_pm_score,"+
-		                    "assigned_to,bug_status,short_desc,changeddate,resolution")
+	q.Set("ctype", "csv")
+	q.Set("columnlist", "product,component,bug_severity,cf_pm_score,"+
+		"assigned_to,bug_status,short_desc,changeddate,resolution")
 	q.Set("human", "1") // If we don't use this flag it will ignore some filters
 	q.Set("query_format", "advanced")
 	q.Set("limit", strconv.Itoa(query.Limit))
@@ -213,7 +214,6 @@ func setupQuery(u *url.URL, query *BugListQuery) (url string, referer string){
 		advMatches++
 	}
 
-
 	u.RawQuery = q.Encode()
 	return u.String(), ""
 }
@@ -230,7 +230,7 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 
 	//url = https://bugzilla.mozilla.org/buglist.cgi?format=simple&limit=4&query_format=advanced&offset=400&order=changeddate%20DESC
 
-	req, err := newHTTPRequest("GET", url , nil)
+	req, err := newHTTPRequest("GET", url, nil)
 	req.Header.Set("Upgrade-Insecure-Request", "1")
 	req.Header.Set("DNT", "1")
 
@@ -272,12 +272,11 @@ func (client *bugzillaCGIClient) bugList(query *BugListQuery) ([]Bug, error) {
 	return results, err
 }
 
-
 // bugList list of last changed bugs
 
 func (client *bugzillaCGIClient) getBug(id int, currentTimestamp string, getXml bool) (xml *[]byte, cached bool, err error) {
 
-	xml, err = storecache.RetrieveCache(id, currentTimestamp,getXml)
+	xml, err = storecache.RetrieveCache(id, currentTimestamp, getXml)
 
 	if err == nil {
 		return xml, true, err
@@ -317,39 +316,36 @@ func (client *bugzillaCGIClient) getBug(id int, currentTimestamp string, getXml 
 		return nil, false, err
 	}
 
-
 	body, err := ioutil.ReadAll(res.Body)
 
 	storecache.StoreCache(id, currentTimestamp, &body, getXml)
 
-	return &body, false,err
+	return &body, false, err
 }
 
-func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug,  bool, error) {
+func (client *bugzillaCGIClient) bugInfo(id int, currentTimestamp string) (*Cbug, bool, error) {
 
 	var bugzilla Cbugzilla
 
 	body, cached, err := client.getBug(id, currentTimestamp, true)
-	err = xml.Unmarshal(*body ,&bugzilla)
+	err = xml.Unmarshal(*body, &bugzilla)
 
 	if err != nil {
 		// invalidate cache
-		storecache.StoreCache(id,"xxx", body, true)
+		storecache.StoreCache(id, "xxx", body, true)
 		return nil, false, err
 	}
 	return bugzilla.Cbug, cached, err
 }
 
-func (client *bugzillaCGIClient) bugInfoHTML(id int, currentTimestamp string) (*[]byte,  bool, error) {
-
+func (client *bugzillaCGIClient) bugInfoHTML(id int, currentTimestamp string) (*[]byte, bool, error) {
 
 	body, cached, err := client.getBug(id, currentTimestamp, false)
 
 	if err != nil {
 		// invalidate cache
-		storecache.StoreCache(id,"xxx", body, false)
+		storecache.StoreCache(id, "xxx", body, false)
 		return nil, false, err
 	}
 	return body, cached, err
 }
-

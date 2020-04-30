@@ -1,16 +1,16 @@
 package bugzilla
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"net/http"
 	"net/http/cookiejar"
+	"os"
 	"reflect"
 	"time"
 
 	"github.com/howeyc/gopass"
-	"bufio"
-	"os"
 )
 
 const httpTimeout int = 60
@@ -56,14 +56,13 @@ type Client struct {
 	json             *bugzillaJSONRPCClient
 }
 
-
 type GetAuthFunc func() ([]*http.Cookie, *string)
 type StoreAuthFunc func(cookies []*http.Cookie, authToken string)
 
 // NewClient creates bugzilla Client instance
 func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword string,
-	           getAuth GetAuthFunc,
-	           	storeAuth StoreAuthFunc) (client *Client, err error) {
+	getAuth GetAuthFunc,
+	storeAuth StoreAuthFunc) (client *Client, err error) {
 
 	httpClient, err := newHTTPClient()
 	if err != nil {
@@ -103,7 +102,6 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 		}
 
 		if bugzillaPassword == "" {
-
 			fmt.Print("Bugzilla Password: ")
 			pass, _ := gopass.GetPasswdMasked()
 			bugzillaPassword = string(pass)
@@ -141,20 +139,19 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 }
 
 type BugListQuery struct {
-	CustomQuery string
-	Limit int
-	Offset int
-	Order string
-	Classification string
-	Product string
-	Component string
-	BugStatus []string
-	WhiteBoard string
-	AssignedTo string
-	FlagRequestee string
-	TargetRelease string
+	CustomQuery     string
+	Limit           int
+	Offset          int
+	Order           string
+	Classification  string
+	Product         string
+	Component       string
+	BugStatus       []string
+	WhiteBoard      string
+	AssignedTo      string
+	FlagRequestee   string
+	TargetRelease   string
 	TargetMilestone string
-
 }
 
 // BugList list of last changed bugs
@@ -179,14 +176,13 @@ func (client *Client) BugInfo(id int) (bugInfo map[string]interface{}, err error
 	return bugsInfo[0], nil
 }
 
-func (client *Client) ShowBug(id int, currentTimestamp string)  (bug *Cbug, cached bool, err error) {
+func (client *Client) ShowBug(id int, currentTimestamp string) (bug *Cbug, cached bool, err error) {
 	return client.cgi.bugInfo(id, currentTimestamp)
 }
 
-func (client *Client) ShowBugHTML(id int, currentTimestamp string)  (html *[]byte, cached bool, err error) {
+func (client *Client) ShowBugHTML(id int, currentTimestamp string) (html *[]byte, cached bool, err error) {
 	return client.cgi.bugInfoHTML(id, currentTimestamp)
 }
-
 
 // BugsInfo returns information about selected bugzilla tickets
 func (client *Client) BugsInfo(idList []int) (bugInfo []map[string]interface{}, err error) {

@@ -15,15 +15,16 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/track/pkg/bugzilla"
+	"crypto/tls"
 	"fmt"
 	"net/http"
-	"strings"
 	"os"
-	"crypto/tls"
-)
+	"strings"
 
+	"github.com/spf13/cobra"
+
+	"github.com/mangelajo/track/pkg/bugzilla"
+)
 
 var bzRhQueryCmd = &cobra.Command{
 	Use:   "rh-query",
@@ -42,14 +43,14 @@ func findRHQuery(name string) string {
 	url := "https://url.corp.redhat.com/" + name
 
 	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify : ignoreSSLCerts},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: ignoreSSLCerts},
 	}
 
 	client := &http.Client{
-		Transport:tr,
+		Transport: tr,
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
 			return http.ErrUseLastResponse
-	} }
+		}}
 
 	resp, err := client.Get(url)
 
@@ -72,7 +73,7 @@ func findRHQuery(name string) string {
 
 func bzRhQuery(cmd *cobra.Command, args []string) {
 
-	if len(args)<1 {
+	if len(args) < 1 {
 		fmt.Println("We need at least one target URL, for example:")
 		fmt.Println("")
 		fmt.Println(" - network-dfg-untriaged")
@@ -97,6 +98,3 @@ func bzRhQuery(cmd *cobra.Command, args []string) {
 	listBugs(buglist, client)
 
 }
-
-
-

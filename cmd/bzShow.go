@@ -15,13 +15,14 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/spf13/cobra"
+
 	"github.com/mangelajo/track/pkg/show"
 )
-
 
 var bzShowCmd = &cobra.Command{
 	Use:   "show",

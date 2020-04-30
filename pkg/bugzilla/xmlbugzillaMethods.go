@@ -2,6 +2,7 @@ package bugzilla
 
 import (
 	"fmt"
+
 	"github.com/fatih/color"
 )
 
@@ -16,13 +17,20 @@ func (extbug *Cexternal_bugs) URL() string {
 	var sfmt string
 
 	switch extbug.Attrname {
-	case "Red Hat Customer Portal": 			sfmt = "https://access.redhat.com/support/cases/%s"
-	case "Red Hat Knowledge Base (Solution)":	sfmt = "https://access.redhat.com/site/solutions/%s"
-	case "Red Hat Engineering Gerrit":			sfmt = "https://code.engineering.redhat.com/gerrit/#/c/%s"
-	case "OpenStack gerrit": 					sfmt = "https://review.openstack.org/#/c/%s/"
-	case "OpenStack Storyboard":				sfmt = "https://storyboard.openstack.org/#!/story/%s"
-	case "Launchpad":							sfmt = "https://bugs.launchpad.net/bugs/%s"
-	case "Trello":								sfmt = "https://trello.com/c/%s"
+	case "Red Hat Customer Portal":
+		sfmt = "https://access.redhat.com/support/cases/%s"
+	case "Red Hat Knowledge Base (Solution)":
+		sfmt = "https://access.redhat.com/site/solutions/%s"
+	case "Red Hat Engineering Gerrit":
+		sfmt = "https://code.engineering.redhat.com/gerrit/#/c/%s"
+	case "OpenStack gerrit":
+		sfmt = "https://review.openstack.org/#/c/%s/"
+	case "OpenStack Storyboard":
+		sfmt = "https://storyboard.openstack.org/#!/story/%s"
+	case "Launchpad":
+		sfmt = "https://bugs.launchpad.net/bugs/%s"
+	case "Trello":
+		sfmt = "https://trello.com/c/%s"
 	default:
 		sfmt = "%s"
 	}
@@ -32,14 +40,13 @@ func (extbug *Cexternal_bugs) URL() string {
 }
 
 func (bug *Cbug) URL() string {
-	return fmt.Sprintf("http://bugzilla.redhat.com/%d", bug.Cbug_id.Number )
+	return fmt.Sprintf("http://bugzilla.redhat.com/%d", bug.Cbug_id.Number)
 }
-
 
 const USE_COLOR = true
 const NO_COLOR = false
 
-func (bi *Cbug) ShortSummary(useColor bool)  {
+func (bi *Cbug) ShortSummary(useColor bool) {
 	if useColor {
 		color.Set(color.FgWhite, color.Bold)
 	}

@@ -15,26 +15,27 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-	"github.com/mangelajo/trello"
 	"fmt"
+	"log"
 	"os"
 	"strings"
-	"log"
+
+	"github.com/mangelajo/trello"
+	"github.com/spf13/cobra"
 )
 
 // cardListCmd represents the cardList command
 var moveCardsCmd = &cobra.Command{
 	Use:   "move",
 	Short: "Move cards from board A to board B",
-	Long: ``,
-	Run: trelloMoveCards,
+	Long:  ``,
+	Run:   trelloMoveCards,
 }
 
 func init() {
 	trelloCmd.AddCommand(moveCardsCmd)
 	moveCardsCmd.Flags().StringVar(&labelFilter, "label-contains", "", "Case insensitive filter for card labels")
-	moveCardsCmd.Flags().BoolVar(&forceMove, "force", false,"Move each card without asking one by one")
+	moveCardsCmd.Flags().BoolVar(&forceMove, "force", false, "Move each card without asking one by one")
 }
 
 var labelFilter string
@@ -42,7 +43,7 @@ var forceMove bool
 
 func trelloMoveCards(cmd *cobra.Command, args []string) {
 
-	if len(args)<2 {
+	if len(args) < 2 {
 		fmt.Println("This command requires two arguments, origin board, destination board")
 		os.Exit(1)
 	}
@@ -56,7 +57,7 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 
 	// Grab necessary data
 
-	srcBoard:= FindBoard(trelloClient, args[0])
+	srcBoard := FindBoard(trelloClient, args[0])
 
 	srcLists, err := srcBoard.GetLists(trello.Defaults())
 	checkError(err)
@@ -64,14 +65,13 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 	srcCards, err := srcBoard.GetCards(trello.Defaults())
 	checkError(err)
 
-	dstBoard:= FindBoard(trelloClient, args[1])
+	dstBoard := FindBoard(trelloClient, args[1])
 
 	dstCards, err := dstBoard.GetCards(trello.Defaults())
 	checkError(err)
 
 	dstLists, err := dstBoard.GetLists(trello.Defaults())
 	checkError(err)
-
 
 	// Build maps for quick lookups
 
@@ -92,9 +92,7 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 		dstListMap[list.Name] = list.ID
 	}
 
-
 	// Start moving
-
 
 	fmt.Println("")
 	fmt.Printf("Moving srcCards: %s -> %s, filtering labels by: '%s'\n", srcBoard.Name, dstBoard.Name, labelFilter)
