@@ -108,16 +108,20 @@ func NewClient(bugzillaAddress string, bugzillaLogin string, bugzillaPassword st
 			pass, _ := gopass.GetPasswdMasked()
 			bugzillaPassword = string(pass)
 		}
-		fmt.Print("Authenticating to bugzilla.... ")
 
-
+		fmt.Print("Authenticating to bugzilla via JSON.... ")
 		token, err := jsonClient.login(bugzillaLogin, bugzillaPassword)
 		authToken = &token
 		if err != nil {
 			return nil, err
 		}
-		cookies = jsonClient.GetCookies()
-		cgiClient.SetCookies(cookies)
+
+		fmt.Print("Authenticating to bugzilla via CGI.... ")
+		if err := cgiClient.login(bugzillaLogin, bugzillaPassword); err != nil {
+			return nil, err
+		}
+
+		cookies = cgiClient.GetCookies()
 		if storeAuth != nil {
 			storeAuth(cookies, *authToken)
 		}
