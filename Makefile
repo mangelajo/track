@@ -12,11 +12,10 @@ track: Makefile pkg/*/*.go pkg/storecache/*.go cmd/*.go main.go
 	go build -ldflags ${LDFLAGS} -o track main.go
 
 test:
-	go test github.com/mangelajo/track/..
+	go test github.com/mangelajo/track/...
 
 clean:
 	rm track
 
 clean-xml:
 	rm pkg/bugzilla/xmlbugzilla.go
-
