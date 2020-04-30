@@ -161,7 +161,7 @@ func trelloMoveCards(cmd *cobra.Command, args []string) {
 
 func checkError(err error) {
 	if err != nil {
-		fmt.Println("Error: %s\n", err)
+		fmt.Printf("Error: %s\n", err)
 		os.Exit(1)
 	}
 }

@@ -47,7 +47,7 @@ func bzShow(cmd *cobra.Command, args []string) {
 	bzid, err := strconv.Atoi(args[0])
 
 	if err != nil {
-		fmt.Println("Cannot parse bz id %s", args[0])
+		fmt.Printf("Cannot parse bz id %s\n", args[0])
 	}
 
 	res := show.OpenBz(bzid, GetBzClient)

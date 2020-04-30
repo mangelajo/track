@@ -23,10 +23,11 @@ func Open(path string) {
 		fmt.Printf("Error opening bolt db: %s\n", path)
 		fmt.Printf("Reason: %s", err)
 		if err.Error() == "timeout" {
-			fmt.Println("\n")
-			fmt.Println("Possibly another instance of track has the database locked")
-			fmt.Println("please close any other instance, or delete the database")
-			fmt.Println("\n")
+			fmt.Print(`
+Possibly another instance of track has the database locked
+please close any other instance, or delete the database
+
+`)
 		}
 		os.Exit(2)
 	}
@@ -72,7 +73,6 @@ func RetrieveCache(bzID int, currentDateTime string, isXml bool) (xmlContent *[]
 }
 
 func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
-	var err error
 	if xmlContent == nil {
 		return
 	}
@@ -80,7 +80,7 @@ func StoreCache(bzID int, lastDateTime string, xmlContent *[]byte, isXml bool) {
 	db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(itob(bzID, isXml))
 		if b == nil {
-			b, err = tx.CreateBucket(itob(bzID, isXml))
+			b, _ = tx.CreateBucket(itob(bzID, isXml))
 		}
 
 		err := b.Put([]byte("lastDateTime"), []byte(lastDateTime))

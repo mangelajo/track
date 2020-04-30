@@ -18,7 +18,7 @@ func Shell(bugs *[]bugzilla.Cbug, getClient func() *bugzilla.Client) {
 	bzNames := []string{}
 
 	if len(*bugs) == 0 {
-		fmt.Println("\nNo bugs for the shell, bye! :)\n")
+		fmt.Print("\nNo bugs for the shell, bye! :)\n\n")
 		return
 	}
 
